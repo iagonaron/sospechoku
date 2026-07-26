@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15100B">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sospechoku">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="iconos/icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="iconos/icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="iconos/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Sospechoku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* --- sepia noir: la estética del icono --- */
+  --bg:#15100B; --panel:#1F1810; --panel2:#261E14; --tinta:#F2E6D0; --tenue:#B09C7C;
+  --oro:#C9A24B; --sobreOro:#1A1206; --rojo:#B4543C; --verde:#7A9455; --muro:#0B0805;
+  --glow1:#33261A; --glow2:#2A1F16;
+  --sup:#281F15; --sup2:#2E2418; --sup3:#241C13; --sup4:#2C2217; --selBg:#3A2C15; --inpBg:#1B150E;
+  --bordeA:#43351F; --bordeB:#3A2E1C; --bordeC:#544224; --bordeD:#43351F;
+  --hdrTop:rgba(21,16,11,.92);
+  --tabBg:#100C08; --tabBorde:#0B0805; --hdrBg:#1C150E; --hdrCer:#2A1712;
+  --vicBg:#251D12; --vicBorde:#43351F;
+  --malBg:#33170F; --malBorde:#6A3520; --malTxt:#EFC3A8;
+  --sombra:0 8px 26px rgba(0,0,0,.55);
+  /* --- muebles y suelos: plano de expediente, papel envejecido --- */
+  --osc:#241A12;
+  --mad:#8A6440; --mad2:#6B4A2C; --mad3:#A67F55;
+  --cla:#F3E7D0; --cla2:#DCC9A9; --cla3:#C2A986;
+  --gris:#B0A48F; --gris2:#877B67;
+  --azulm:#5E7A96; --acen:#C4623F; --acen2:#9E4A2E; --tierra:#7A5A38;
+  --amar:#E0B23C; --amar2:#B98D24; --seco:#8C7247;
+}
+body.claro{
+  --bg:#E9E9F6; --panel:#FFFFFF; --panel2:#FFFFFF; --tinta:#1B1720; --tenue:#6E6A78;
+  --oro:#D99A28; --sobreOro:#211A08; --rojo:#B33B2C; --verde:#4E8A3C; --muro:#17110F;
+  --glow1:#DCDCF2; --glow2:#F3DEE3;
+  --sup:#F1EFF8; --sup2:#FFFFFF; --sup3:#F5F3FB; --sup4:#F1EFF8; --selBg:#FBEFD8; --inpBg:#FFFFFF;
+  --bordeA:#CFCADD; --bordeB:#DFDBEA; --bordeC:#CFCADD; --bordeD:#DFDBEA;
+  --hdrTop:rgba(233,233,246,.92);
+  --tabBg:#E4E1EF; --tabBorde:#17110F; --hdrBg:#DDD9EC; --hdrCer:#F2D8D4;
+  --vicBg:#F5F2FC; --vicBorde:#DFDBEA;
+  --malBg:#FBE3DE; --malBorde:#E9B5AB; --malTxt:#7A2A1C;
+  --sombra:0 6px 22px rgba(30,25,45,.16);
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1100px 620px at 78% -12%, var(--glow1) 0%, transparent 62%),
+    radial-gradient(800px 520px at 6% 108%, var(--glow2) 0%, transparent 60%),
+    var(--bg);
+  color:var(--tinta);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  min-height:100vh; min-height:100svh;
+  padding:0 0 calc(3rem + env(safe-area-inset-bottom));
+  overscroll-behavior-y:contain;
+}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;margin:0}
+
+/* ---------- cabecera ---------- */
+header{
+  display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;
+  padding:.85rem clamp(.7rem,2.4vw,1.6rem);
+  padding-left:max(clamp(.7rem,2.4vw,1.6rem),env(safe-area-inset-left));
+  padding-right:max(clamp(.7rem,2.4vw,1.6rem),env(safe-area-inset-right));
+  border-bottom:1px solid var(--bordeB); background:var(--hdrTop);
+  position:sticky;top:0;z-index:30;backdrop-filter:blur(8px)
+}
+h1{
+  font-family:'Playfair Display',Georgia,serif;font-weight:900;
+  font-size:clamp(1.2rem,4.2vw,1.85rem);letter-spacing:.07em;color:var(--tinta);
+  text-shadow:0 1px 0 rgba(0,0,0,.5)
+}
+#logo{border-radius:9px;flex:none;box-shadow:0 0 0 1px var(--oro),0 2px 8px rgba(0,0,0,.5)}
+header .marca{display:flex;align-items:center;gap:.6rem}
+.sello{margin-left:auto;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--oro);border:1px solid var(--bordeC);padding:.3rem .6rem;border-radius:999px;white-space:nowrap}
+h1 span{color:var(--oro);font-style:italic;font-weight:400;font-size:.72em}
+.niveles{display:flex;gap:.3rem;margin-left:auto;background:var(--sup);padding:.22rem;border-radius:999px}
+.nivel-btn{
+  border:0;background:transparent;color:var(--tenue);font:inherit;font-size:.86rem;font-weight:600;
+  padding:.42rem .82rem;border-radius:999px;cursor:pointer
+}
+.nivel-btn.on{background:var(--oro);color:var(--sobreOro)}
+.icono-btn{
+  border:1px solid var(--bordeA);background:var(--sup);color:var(--tinta);width:2.2rem;height:2.2rem;
+  border-radius:50%;cursor:pointer;font-size:1rem
+}
+
+/* ---------- barra del caso ---------- */
+.barra-caso{
+  display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;
+  padding:.8rem clamp(.7rem,2.4vw,1.6rem);border-bottom:1px solid var(--bordeB)
+}
+#victima-em{font-size:2rem;filter:drop-shadow(0 3px 6px rgba(0,0,0,.6))}
+#titulo-caso{margin:0;flex:1 1 240px;font-family:Georgia,serif;font-size:clamp(.98rem,2.4vw,1.18rem);line-height:1.35}
+.meta{display:flex;gap:.45rem;align-items:center;font-size:.78rem;color:var(--tenue)}
+.meta span{background:var(--sup);border:1px solid var(--bordeD);padding:.25rem .6rem;border-radius:999px;white-space:nowrap}
+#reloj{font-variant-numeric:tabular-nums;color:var(--oro);font-weight:700}
+
+/* ---------- rejilla principal ---------- */
+main{
+  display:grid;gap:clamp(.9rem,2.4vw,1.6rem);
+  padding:clamp(.9rem,2.4vw,1.6rem);max-width:1180px;margin:0 auto;
+  grid-template-columns:1fr
+}
+@media(min-width:940px){ main{grid-template-columns:minmax(340px,1fr) 350px;align-items:start} }
+
+/* ---------- tablero ---------- */
+.tablero{
+  position:relative;
+  container-type:inline-size;
+  --fs-ficha:calc(48cqw / var(--n));--fs-mueble:calc(30cqw / var(--n));
+  --fs-marca:calc(34cqw / var(--n));--fs-rot:calc(15cqw / var(--n));
+  display:grid;--hdr:1.15rem;gap:0;
+  background:var(--tabBg);border:5px solid var(--tabBorde);border-radius:6px;padding:0;
+  box-shadow:0 0 0 2px var(--oro),10px 10px 0 rgba(0,0,0,.35), var(--sombra);overflow:hidden;width:100%;max-width:620px;margin:0 auto
+}
+.hdr{
+  display:flex;align-items:center;justify-content:center;
+  font-size:.68rem;font-weight:700;color:var(--tenue);background:var(--hdrBg);min-height:1.15rem
+}
+.hdr.cerrada{color:var(--rojo);background:var(--hdrCer)}
+.cel{
+  position:relative;aspect-ratio:1;padding:0;margin:0;cursor:pointer;
+  background-color:var(--f1);border:0;font:inherit;color:inherit;overflow:hidden
+}
+/* --- suelos (uniformes, vista cenital) --- */
+.sue-madera{
+  background-image:
+    linear-gradient(0deg,transparent calc(50% - 1px),var(--f2) calc(50% - 1px) calc(50% + 1px),transparent calc(50% + 1px)),
+    linear-gradient(90deg,transparent calc(32% - 1px),var(--f2) calc(32% - 1px) calc(32% + 1px),transparent calc(32% + 1px))
+}
+.sue-baldosa{box-shadow:inset 0 0 0 1.5px var(--f2)}
+.sue-ajedrez{background-image:conic-gradient(var(--f2) 0 25%,var(--f1) 0 50%,var(--f2) 0 75%,var(--f1) 0)}
+.sue-cemento{
+  background-image:
+    radial-gradient(circle at 28% 38%,var(--f2) 0 1.3px,transparent 1.4px),
+    radial-gradient(circle at 72% 66%,var(--f2) 0 1.3px,transparent 1.4px),
+    radial-gradient(circle at 55% 20%,var(--f2) 0 1px,transparent 1.1px)
+}
+.cel:active{filter:brightness(.93)}
+.cel.bloq{cursor:not-allowed}
+.cel.bloq::before{content:'';position:absolute;inset:0;background:rgba(36,28,22,.09);z-index:1}
+.cel .spr{
+  position:absolute;left:6%;top:6%;width:88%;height:88%;z-index:1;
+  stroke:var(--osc);stroke-width:2.3;stroke-linejoin:round;overflow:visible;
+  filter:drop-shadow(0 1px 1px rgba(36,28,22,.28))
+}
+.cel .spr.chico{stroke-width:4.6}
+.cel .ficha{
+  position:absolute;left:10%;top:10%;width:80%;height:80%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:var(--fs-ficha);background:#FFF8EC;border:3px solid var(--osc);border-radius:50%;
+  box-shadow:0 2px 5px rgba(20,14,10,.4);z-index:3
+}
+.cel.con-ficha{box-shadow:inset 0 0 0 3px var(--oro)}
+.cel.fijado{box-shadow:inset 0 0 0 3px var(--verde)}
+.cel .ficha.vic{animation:aparece .35s ease}
+.cel.victima{box-shadow:inset 0 0 0 3px var(--rojo)}
+.cel.victima-mal{box-shadow:inset 0 0 0 3px var(--rojo);animation:tiembla .4s}
+.cel.cerrada::after{content:'';position:absolute;inset:0;z-index:2;background:rgba(201,80,63,.15)}
+@keyframes tiembla{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.cel .marca{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:var(--fs-marca);color:#A32D1D;opacity:.9;font-weight:900;z-index:4;
+  text-shadow:0 1px 0 rgba(255,255,255,.55)
+}
+/* --- rótulos de estancia sobre el plano --- */
+.etiquetas{position:absolute;inset:0;pointer-events:none;z-index:5}
+.etiq{
+  position:absolute;transform:translate(-50%,-100%);white-space:nowrap;
+  font-family:'Playfair Display',Georgia,serif;font-weight:900;letter-spacing:.06em;color:#F6ECD8;
+  -webkit-text-stroke:3.5px #16120f;paint-order:stroke fill
+}
+@keyframes aparece{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+
+.leyenda{display:flex;flex-wrap:wrap;gap:.32rem;margin:.7rem auto 0;max-width:620px;justify-content:center}
+.chip-hab{
+  font-size:.68rem;font-weight:700;letter-spacing:.02em;padding:.22rem .55rem;border-radius:999px;
+  background:hsl(var(--h) 26% 20%);color:hsl(var(--h) 45% 78%);border:1px solid hsl(var(--h) 30% 30%)
+}
+.nota-leyenda{text-align:center;font-size:.72rem;color:var(--tenue);margin:.45rem 0 0}
+
+.zona-victima{
+  max-width:620px;margin:.7rem auto 0;padding:0;font-size:.85rem;color:var(--tenue);
+  border-radius:8px;overflow:hidden;max-height:0;transition:max-height .2s
+}
+.zona-victima.visible{padding:.6rem .8rem;max-height:8rem;background:var(--vicBg);border:1px solid var(--vicBorde)}
+.zona-victima.mal{background:var(--malBg);border-color:var(--malBorde);color:var(--malTxt)}
+
+/* ---------- herramientas ---------- */
+.herramientas{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;margin:.85rem auto 0;max-width:620px}
+.hbtn{
+  border:1px solid var(--bordeA);background:var(--sup);color:var(--tinta);font:inherit;font-size:.82rem;
+  padding:.5rem .8rem;border-radius:8px;cursor:pointer;font-weight:600
+}
+.hbtn.on{background:var(--oro);color:var(--sobreOro);border-color:var(--oro)}
+.hbtn:disabled{opacity:.4;cursor:default}
+
+/* ---------- sospechosos ---------- */
+.sospechosos{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:.45rem;
+  margin:.9rem auto 0;max-width:620px
+}
+.sosp{
+  position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:.05rem;
+  border:1px solid var(--bordeA);background:var(--sup3);color:var(--tinta);font:inherit;
+  padding:.5rem .55rem;border-radius:10px;cursor:pointer;text-align:left
+}
+.sosp .em{font-size:1.3rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;
+  width:2.1rem;height:2.1rem;border:2.5px solid var(--bordeA);border-radius:50%;background:#FFF8EC;margin-bottom:.15rem}
+.sosp .nb{font-weight:700;font-size:.92rem}
+.sosp .sub{font-size:.66rem;color:var(--tenue);line-height:1.15}
+.sosp.sel{border-color:var(--oro);background:var(--selBg);box-shadow:0 0 0 2px rgba(232,180,74,.35)}
+.sosp.puesto{opacity:.62}
+.sosp .tick{position:absolute;top:.35rem;right:.4rem;font-size:.8rem}
+
+/* ---------- pistas ---------- */
+.panel{background:var(--panel);border:1px solid var(--bordeB);border-radius:12px;padding:.9rem;box-shadow:var(--sombra)}
+.panel h2{font-size:1.05rem;margin-bottom:.15rem}
+.panel .sub{font-size:.74rem;color:var(--tenue);margin:.1rem 0 .7rem}
+#pistas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.35rem}
+.pista{
+  display:flex;gap:.55rem;align-items:flex-start;padding:.5rem .6rem;border-radius:8px;
+  background:var(--sup3);border:1px solid var(--bordeB);cursor:pointer;font-size:.87rem;line-height:1.35
+}
+.pista b{color:var(--oro);font-size:.78rem;min-width:1.1rem;text-align:right;padding-top:.08rem}
+.pista.usada{opacity:.42;text-decoration:line-through}
+.acciones{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.9rem;align-items:center}
+.abtn{
+  flex:1 1 auto;border:1px solid var(--bordeA);background:var(--sup4);color:var(--tinta);font:inherit;font-weight:700;
+  padding:.62rem .7rem;border-radius:9px;cursor:pointer;font-size:.86rem
+}
+.abtn.principal{background:var(--oro);color:var(--sobreOro);border-color:var(--oro)}
+.abtn:disabled{opacity:.4;cursor:default}
+.ir-caso{display:flex;gap:.35rem;align-items:center;margin-top:.7rem;font-size:.76rem;color:var(--tenue)}
+.ir-caso input{
+  width:5.5rem;background:var(--inpBg);border:1px solid var(--bordeA);color:var(--tinta);border-radius:7px;
+  padding:.4rem .5rem;font:inherit;font-size:16px
+}
+
+
+/* ---------- ajustes táctiles (móvil) ---------- */
+.hbtn,.abtn,.acu,.cel,.ficha,.ir-caso input,.nivel{touch-action:manipulation}
+.tablero,.sospechosos,.leyenda{-webkit-user-select:none;user-select:none}
+@media (pointer:coarse){
+  .hbtn,.abtn,.acu{min-height:44px}
+  .herramientas .hbtn{flex:1 1 auto}
+  .ir-caso input{min-height:40px}
+}
+@media (max-width:380px){
+  .hbtn{font-size:.78rem;padding:.5rem .6rem}
+  .abtn{font-size:.82rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+/* ---------- avisos y modales ---------- */
+.aviso{
+  position:fixed;left:50%;bottom:1.1rem;transform:translate(-50%,140%);
+  background:var(--sup2);border:1px solid var(--bordeC);color:var(--tinta);padding:.7rem 1rem;border-radius:10px;
+  font-size:.86rem;max-width:92vw;text-align:center;z-index:60;transition:transform .22s;box-shadow:var(--sombra)
+}
+.aviso.visible{transform:translate(-50%,0)}
+.aviso.mal{background:var(--malBg);border-color:var(--malBorde);color:var(--malTxt)}
+.cargando{
+  position:fixed;inset:0;background:rgba(12,10,9,.86);display:none;align-items:center;justify-content:center;
+  z-index:80;font-family:Georgia,serif;font-size:1.1rem;color:var(--oro)
+}
+.cargando.visible{display:flex}
+.modal{position:fixed;inset:0;background:rgba(8,7,6,.82);display:none;align-items:center;justify-content:center;z-index:70;padding:1rem}
+.modal.visible{display:flex}
+.caja{
+  background:var(--panel2);border:1px solid var(--bordeC);border-radius:14px;padding:1.2rem;max-width:460px;width:100%;
+  max-height:88vh;max-height:88svh;overflow:auto;-webkit-overflow-scrolling:touch;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center
+}
+.caja h2{font-size:1.3rem;margin-bottom:.5rem}
+.caja p{font-size:.9rem;line-height:1.45;color:var(--tenue)}
+.caja .datos{font-size:.8rem;margin-top:.8rem}
+.culpable-em{font-size:4rem;line-height:1}
+.record{color:var(--oro);font-weight:700}
+.record.tenue{color:var(--tenue);font-weight:400}
+#acusar-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.4rem;margin:.9rem 0 .4rem}
+.acu{
+  border:1px solid var(--bordeC);background:var(--sup4);color:var(--tinta);font:inherit;font-weight:700;
+  padding:.65rem .5rem;border-radius:9px;cursor:pointer;font-size:.9rem
+}
+.acu:active{background:var(--oro);color:var(--sobreOro)}
+.reglas{text-align:left}
+.reglas ol{padding-left:1.1rem;font-size:.87rem;line-height:1.5;color:var(--tinta)}
+.reglas li{margin-bottom:.5rem}
+.reglas .tip{font-size:.8rem;color:var(--tenue);border-left:2px solid var(--oro);padding-left:.6rem;margin-top:.8rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="marca"><img id="logo" src="data:image/jpeg;base64,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" alt="" width="38" height="38"><h1 id="titulo"></h1></div>
+  <span class="sello">7 sospechosos · 8×8</span>
+  <button class="icono-btn" id="btn-reglas" title="Cómo se juega">?</button>
+</header>
+
+<div class="barra-caso">
+  <span id="victima-em">🥟</span>
+  <p id="titulo-caso">…</p>
+  <div class="meta">
+    <span id="num-caso">#0</span>
+    <span id="reloj">00:00</span>
+  </div>
+</div>
+
+<main>
+  <section>
+    <div id="tablero" class="tablero"></div>
+    <div id="leyenda" class="leyenda"></div>
+    <p class="nota-leyenda">Los muebles grandes ocupan su casilla: ahí no cabe nadie.</p>
+    <div id="zona-victima" class="zona-victima"></div>
+
+    <div class="herramientas">
+      <button class="hbtn modo-btn on" data-modo="poner">👤 Colocar</button>
+      <button class="hbtn modo-btn" data-modo="x">✕ Descartar</button>
+      <button class="hbtn" id="btn-limpiar">🧽 Quitar ✕</button>
+      <button class="hbtn" id="btn-deshacer">↩ Deshacer</button>
+      <button class="hbtn" id="btn-nuevo">🔀 Caso nuevo</button>
+    </div>
+
+    <div id="sospechosos" class="sospechosos"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Pistas del caso</h2>
+    <p class="sub">Todas son ciertas. Toca una pista para tacharla cuando la hayas usado.</p>
+    <ol id="pistas"></ol>
+    <div class="acciones">
+      <span class="hbtn" style="cursor:default">Colocados: <b id="progreso">0/0</b></span>
+      <button class="abtn" id="btn-ayuda">💡 Ayuda</button>
+      <button class="abtn principal" id="btn-resolver" disabled>🔍 Resolver caso</button>
+      <button class="abtn" id="btn-solucion">🏳️ Ver solución</button>
+    </div>
+    <div class="ir-caso">
+      Repetir un caso concreto:
+      <input id="input-caso" type="number" inputmode="numeric" placeholder="nº">
+      <button class="hbtn" id="btn-ir-caso">Ir</button>
+    </div>
+  </section>
+</main>
+
+<div id="aviso" class="aviso"></div>
+<div id="cargando" class="cargando">Montando el caso…</div>
+
+<div class="modal" id="modal-acusar">
+  <div class="caja">
+    <h2>Hora de acusar</h2>
+    <p id="acusar-donde"></p>
+    <div id="acusar-lista"></div>
+    <button class="hbtn" id="cerrar-acusar">Volver al plano</button>
+  </div>
+</div>
+
+<div class="modal" id="modal-final">
+  <div class="caja">
+    <div id="final-cuerpo"></div>
+    <div class="acciones">
+      <button class="abtn principal" id="btn-otro">Otro caso</button>
+      <button class="abtn" id="btn-ver-plano">Ver el plano</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-reglas">
+  <div class="caja reglas">
+    <h2>Cómo se juega</h2>
+    <ol>
+      <li><b>Una persona por fila y por columna.</b> Si colocas a alguien en la fila 3, nadie más puede estar en la fila 3 ni en su columna.</li>
+      <li><b>Todas las pistas son verdaderas</b> y se cumplen a la vez. No hay que adivinar nunca: todos los casos se resuelven razonando.</li>
+      <li><b>El plano también es una pista.</b> Los muebles grandes ocupan su casilla y ahí no cabe nadie; en el sofá, la silla, la cama del perro o el váter sí se puede estar (y también encima de la caca de Lusco, con toda la dignidad que eso conlleva).</li>
+      <li><b>La víctima ocupa la última casilla libre</b>: la que queda cuando ya están todos colocados, respetando la regla de filas y columnas.</li>
+      <li><b>El culpable es quien se quedó a solas con la víctima</b> en la misma estancia.</li>
+    </ol>
+    <p class="tip">Toca un personaje y luego una casilla para colocarlo. Con <b>✕ Descartar</b> marcas casillas imposibles, igual que con lápiz. Toca una pista para tacharla.</p>
+    <button class="hbtn" id="cerrar-reglas">Entendido</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   SOSPECHOKU — motor de generación
+   Reglas (inspiradas en Murdoku, de M. Garand):
+   - Rejilla NxN. Cada fila y cada columna: como máximo 1 personaje.
+   - N-1 sospechosos + 1 víctima = N ocupantes (una permutación).
+   - Hay casillas bloqueadas (muebles donde no cabe nadie).
+   - La víctima ocupa la casilla que queda libre al final.
+   - El culpable es quien esté a solas con la víctima en su habitación.
+   ============================================================ */
+'use strict';
+
+/* ---------------- RNG con semilla ---------------- */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function mkRnd(seed) {
+  const r = mulberry32(seed);
+  const f = () => r();
+  f.int = (n) => Math.floor(r() * n);
+  f.pick = (arr) => arr[Math.floor(r() * arr.length)];
+  f.shuffle = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; } return a; };
+  return f;
+}
+
+/* ---------------- Personajes ---------------- */
+const PERSONAJES = [
+  { id: 'piter', nom: 'Piter', em: '👩🏽', tipo: 'humano', g: 'f', tam: 'grande', color: null, desc: 'la humana del taller', aro: '#8DA3B8' },
+  { id: 'pedro', nom: 'Pedro', em: '👨🏻‍🦲', tipo: 'humano', g: 'm', tam: 'grande', color: null, desc: 'el humano del estudio', aro: '#C9A24B' },
+  { id: 'truco', nom: 'Truco', em: '🐈', tipo: 'gato', g: 'm', tam: 'grande', color: null, desc: 'el gato grande', aro: '#C4623F' },
+  { id: 'merlo', nom: 'Merlo', em: '🐈‍⬛', tipo: 'gato', g: 'm', tam: 'pequeño', color: 'negro', desc: 'el gato pequeño', aro: '#5E7A96' },
+  { id: 'lusco', nom: 'Lusco', em: '🐕‍🦺', tipo: 'perro', g: 'm', tam: 'grande', color: 'negro', desc: 'el perro negro grande', aro: '#7A9455' },
+  { id: 'visma', nom: 'Visma', em: '🐕', tipo: 'perro', g: 'f', tam: 'grande', color: 'marrón', desc: 'la perra marrón grande', aro: '#A9564F' },
+  { id: 'toxo', nom: 'Toxo', em: '🐕', tipo: 'perro', g: 'm', tam: 'pequeño', color: 'rubio', desc: 'el perro rubio pequeño', aro: '#E0B23C' },
+];
+
+/* ---------------- Habitaciones ---------------- */
+const HAB = {
+  S: { id: 'S', n: 'el salón', N: 'El salón', ab: 'SALÓN', hue: 38, agua: false, de: null, suelo: 'madera', f1: '#D9BE8E', f2: '#B9985F' },
+  C: { id: 'C', n: 'la cocina', N: 'La cocina', ab: 'COCINA', hue: 140, agua: true, de: null, suelo: 'baldosa', f1: '#EDD9A0', f2: '#D0B56B' },
+  H: { id: 'H', n: 'la habitación', N: 'La habitación', ab: 'HABITACIÓN', hue: 212, agua: false, de: null, suelo: 'madera', f1: '#DCC0B0', f2: '#BE9E8B' },
+  P: { id: 'P', n: 'el baño de Piter', N: 'El baño de Piter', ab: 'BAÑO PITER', hue: 178, agua: true, de: 'Piter', suelo: 'ajedrez', f1: '#D7E1CE', f2: '#AFC2A4' },
+  D: { id: 'D', n: 'el baño de Pedro', N: 'El baño de Pedro', ab: 'BAÑO PEDRO', hue: 285, agua: true, de: 'Pedro', suelo: 'ajedrez', f1: '#E1D4E1', f2: '#BCA8BE' },
+  T: { id: 'T', n: 'el taller de Piter', N: 'El taller de Piter', ab: 'TALLER', hue: 330, agua: false, de: 'Piter', suelo: 'cemento', f1: '#D2D7DB', f2: '#ADB4BA' },
+  E: { id: 'E', n: 'el estudio de Pedro', N: 'El estudio de Pedro', ab: 'ESTUDIO', hue: 8, agua: false, de: 'Pedro', suelo: 'madera', f1: '#C09A66', f2: '#9F7845' },
+};
+
+/* ---------------- Muebles (emoji único por tipo) ---------------- */
+const MUEBLES = {
+  /* --- salón --- */
+  sofa: { n: 'el sofá', e: '🛋️', sit: 1 },
+  tele: { n: 'la televisión', e: '📺', sit: 0 },
+  tendal: { n: 'la ropa tendida', e: '👕', sit: 0 },
+  caja: { n: 'la caja de cartón que ya toca tirar', e: '📦', sit: 0 },
+  caca: { n: 'la caca de Lusco', e: '💩', sit: 1 },
+  pis: { n: 'el pis de Toxo', e: '💧', sit: 1 },
+  /* --- cocina --- */
+  nevera: { n: 'la nevera sin limpiar', e: '🧊', sit: 0 },
+  silla: { n: 'la silla', e: '🪑', sit: 1 },
+  papelera: { n: 'la papelera que nunca se baja', e: '🗑️', sit: 0 },
+  sillapapeles: { n: 'la silla con papeles encima', e: '📄', sit: 0 },
+  cacahuete: { n: 'el cacahuete pisado', e: '🥜', sit: 1, esc: 0.45 },
+  /* --- habitación --- */
+  calcetines: { n: 'los calcetines de Piter', e: '🧦', sit: 1 },
+  cama: { n: 'la cama', e: '🛏️', sit: 1 },
+  plantaseca: { n: 'la planta seca', e: '🥀', sit: 0 },
+  vaso: { n: 'el vaso de agua vacío', e: '🥛', sit: 0 },
+  /* --- estudio de Pedro --- */
+  piano: { n: 'el piano', e: '🎹', sit: 0 },
+  ordenador: { n: 'el ordenador con Claude abierto', e: '💻', sit: 0 },
+  pesas: { n: 'las pesas', e: '🏋️', sit: 0 },
+  mesaordenador: { n: 'la mesa del ordenador', e: '🪵', sit: 0 },
+  guitarra: { n: 'la guitarra', e: '🎸', sit: 0 },
+  /* --- taller de Piter --- */
+  impresora: { n: 'la impresora', e: '🖨️', sit: 0 },
+  sillaazul: { n: 'la silla azul', e: '💺', sit: 1 },
+  camaperro: { n: 'la cama del perro', e: '🐾', sit: 1 },
+  mesablanca: { n: 'la mesa blanca', e: '⬜', sit: 0 },
+  /* --- baños --- */
+  vater: { n: 'el váter', e: '🚽', sit: 1 },
+  lavabo: { n: 'el lavabo', e: '🧼', sit: 0 },
+  espejo: { n: 'el espejo', e: '🪞', sit: 0 },
+  ducha: { n: 'la ducha', e: '🚿', sit: 1 },
+  alfombrilla: { n: 'la alfombrilla', e: '🟦', sit: 1 },
+  toalla: { n: 'la toalla', e: '🧴', sit: 0 },
+  papelmordido: { n: 'el papel higiénico mordisqueado', e: '🧻', sit: 1 },
+  ropasuelo: { n: 'la ropa tirada por el suelo', e: '👖', sit: 1 },
+};
+const MUEBLES_HAB = {
+  S: ['sofa', 'tele', 'tendal', 'caja', 'caca', 'pis'],
+  C: ['nevera', 'silla', 'papelera', 'sillapapeles', 'cacahuete'],
+  H: ['calcetines', 'cama', 'plantaseca', 'vaso'],
+  P: ['vater', 'lavabo', 'ducha', 'papelmordido', 'ropasuelo'],
+  D: ['vater', 'lavabo', 'espejo', 'ducha', 'alfombrilla', 'toalla'],
+  T: ['impresora', 'sillaazul', 'camaperro', 'mesablanca'],
+  E: ['piano', 'ordenador', 'mesaordenador', 'guitarra', 'pesas'],
+};
+
+/* ---------------- Planos ---------------- */
+const PLANOS = {
+  casa: [
+    'SSSSCCCC',
+    'SSSSCCCC',
+    'SSSSCCCC',
+    'SSSSPPEE',
+    'TTTHPPEE',
+    'TTTHHHEE',
+    'TTTHHHDD',
+    'TTTHHHDD',
+  ],
+};
+
+/* Una sola dificultad, deliberadamente dura:
+   - los 7 personajes dentro (8 ocupantes en 8 filas: no sobra ni una)
+   - sin pistas de tier 1 (las directas del tipo "X estaba en la cocina")
+   - tope de 1 por familia facil, para que no haya dos regalos seguidos
+   - propagable: el caso siempre sale razonando, nunca probando */
+const NIVELES = {
+  unico: {
+    plano: 'casa', nSosp: 7, minPistas: 6, maxPistas: 16, tiers: [2, 3, 3, 3], propagable: true,
+    caps: {
+      fila: 1, col: 1, filaNeg: 1, colNeg: 1, habPos: 1, habNeg: 1, mismaHab: 1,
+      mueble: 1, muebleGen: 1, borde: 1, agua: 1, duenio: 1,
+      ordenCol: 2, ordenFila: 2, distCol: 2, distFila: 2, diagNo: 2, junto: 2, _def: 2,
+    },
+  },
+};
+
+/* límites de familia: evita pistas repetitivas y coordenadas regaladas */
+function permitida(p, sel, caps) {
+  const tope = caps[p.fam] !== undefined ? caps[p.fam] : caps._def;
+  let n = 0;
+  for (const q of sel) if (q.fam === p.fam) n++;
+  if (n >= tope) return false;
+  if (p.fam === 'fila' || p.fam === 'col') {
+    const otra = p.fam === 'fila' ? 'col' : 'fila';
+    for (const q of sel) if (q.fam === otra && q.q[0] === p.q[0]) return false;
+  }
+  return true;
+}
+
+/* ---------------- Víctimas (el "muerto" es un objeto: versión doméstica) ---------------- */
+const VICTIMAS = [
+  { n: 'la empanada', e: '🥟', t: 'Alguien se ha zampado el último trozo de empanada.' },
+  { n: 'el rollo de papel', e: '🧻', t: 'El rollo de papel ha aparecido hecho confeti.' },
+  { n: 'la planta de la abuela', e: '🪴', t: 'La planta de la abuela está en el suelo, con la tierra esparcida.' },
+  { n: 'el tofu marinado', e: '🍲', t: 'El tofu que llevaba dos días marinándose ha desaparecido.' },
+  { n: 'la partitura', e: '🎼', t: 'La partitura del concierto del sábado ha aparecido mordisqueada.' },
+  { n: 'la taza favorita', e: '☕', t: 'La taza favorita de la casa ha aparecido rota en tres trozos.' },
+  { n: 'el bocadillo', e: '🥪', t: 'El bocadillo que estaba preparado para la merienda ya no está.' },
+  { n: 'la zapatilla', e: '👟', t: 'La zapatilla nueva ha aparecido con la suela destrozada.' },
+  { n: 'la tarta de zanahoria', e: '🍰', t: 'La tarta de zanahoria tiene un mordisco sospechoso.' },
+  { n: 'el cable de los cascos', e: '🎧', t: 'El cable de los cascos ha aparecido cortado por la mitad.' },
+  { n: 'el ovillo de lana', e: '🧶', t: 'El ovillo de lana está enredado por toda la casa.' },
+  { n: 'el mando de la tele', e: '📱', t: 'El mando de la tele ha aparecido lleno de babas y sin pilas.' },
+];
+
+/* ============================================================
+   Utilidades de rejilla
+   ============================================================ */
+function LETRA(c) { return String.fromCharCode(65 + c); }
+
+function construirMapa(plano, rnd) {
+  const N = plano.length;
+  const celdas = [];
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      celdas.push({ i: r * N + c, r, c, hab: plano[r][c], mueble: null });
+    }
+  }
+  // muebles por habitación
+  const porHab = {};
+  for (const cel of celdas) (porHab[cel.hab] = porHab[cel.hab] || []).push(cel);
+  for (const h of Object.keys(porHab)) {
+    const lista = porHab[h];
+    const tipos = rnd.shuffle(MUEBLES_HAB[h].slice());
+    const k = Math.max(1, Math.min(tipos.length, Math.round(lista.length * (0.28 + rnd() * 0.20))));
+    // sesgo: los muebles tienden a ir pegados a las paredes de la habitación
+    const puntuadas = rnd.shuffle(lista).map(cel => {
+      let borde = 0;
+      const vec = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+      for (const [dr, dc] of vec) {
+        const r2 = cel.r + dr, c2 = cel.c + dc;
+        if (r2 < 0 || c2 < 0 || r2 >= N || c2 >= N) borde++;
+        else if (plano[r2][c2] !== h) borde++;
+      }
+      return { cel, borde: borde + rnd() };
+    }).sort((a, b) => b.borde - a.borde);
+    for (let j = 0; j < k; j++) puntuadas[j].cel.mueble = tipos[j];
+  }
+  return { N, celdas };
+}
+
+function libre(cel) { return !cel.mueble || MUEBLES[cel.mueble].sit === 1; }
+
+/* ============================================================
+   Solver: cuenta colocaciones válidas (early exit)
+   pos[] = índice de celda por sospechoso
+   ============================================================ */
+function contarSoluciones(ctx, pistas, limite) {
+  const { N, celdas, nSosp } = ctx;
+  const dominios = [];
+  for (let s = 0; s < nSosp; s++) {
+    let dom = ctx.celdasLibres.slice();
+    for (const p of pistas) if (p.tipo === 'u' && p.q[0] === s) dom = dom.filter(i => p.test(i));
+    dominios.push(dom);
+  }
+  const binarias = pistas.filter(p => p.tipo === 'b');
+  const globales = pistas.filter(p => p.tipo === 'g');
+  const orden = dominios.map((d, s) => [d.length, s]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+
+  const pos = new Array(nSosp).fill(-1);
+  const usadaF = new Array(N).fill(false), usadaC = new Array(N).fill(false);
+  let total = 0;
+  const binPorPar = {};
+  for (const p of binarias) { const k = p.q[0] + ',' + p.q[1]; (binPorPar[k] = binPorPar[k] || []).push(p); }
+
+  function okBin(s) {
+    for (const p of binarias) {
+      const [a, b] = p.q;
+      if (a !== s && b !== s) continue;
+      if (pos[a] < 0 || pos[b] < 0) continue;
+      if (!p.test(pos[a], pos[b])) return false;
+    }
+    return true;
+  }
+  function okGlobParcial(colocados) {
+    for (const p of globales) {
+      let hay = 0, pend = 0;
+      for (const s of p.q) { if (pos[s] >= 0) { if (p.dentro(pos[s])) hay++; } else pend++; }
+      if (hay > p.n) return false;
+      if (hay + pend < p.n) return false;
+    }
+    return true;
+  }
+  function forward(k) {
+    for (let j = k; j < nSosp; j++) {
+      const s = orden[j];
+      let alguna = false;
+      for (const i of dominios[s]) {
+        const r = (i / N) | 0, c = i % N;
+        if (usadaF[r] || usadaC[c]) continue;
+        let ok = true;
+        for (const p of binarias) {
+          const [a, b] = p.q;
+          if (a !== s && b !== s) continue;
+          const otro = a === s ? b : a;
+          if (pos[otro] < 0) continue;
+          pos[s] = i;
+          ok = p.test(pos[a], pos[b]);
+          pos[s] = -1;
+          if (!ok) break;
+        }
+        if (ok) { alguna = true; break; }
+      }
+      if (!alguna) return false;
+    }
+    return true;
+  }
+
+  function dfs(k) {
+    if (total >= limite) return;
+    if (k === nSosp) {
+      for (const p of globales) {
+        let hay = 0;
+        for (const s of p.q) if (p.dentro(pos[s])) hay++;
+        if (hay !== p.n) return;
+      }
+      total++;
+      return;
+    }
+    const s = orden[k];
+    for (const i of dominios[s]) {
+      const r = (i / N) | 0, c = i % N;
+      if (usadaF[r] || usadaC[c]) continue;
+      pos[s] = i;
+      if (okBin(s) && okGlobParcial(k + 1) && forward(k + 1)) {
+        usadaF[r] = true; usadaC[c] = true;
+        dfs(k + 1);
+        usadaF[r] = false; usadaC[c] = false;
+      }
+      pos[s] = -1;
+      if (total >= limite) return;
+    }
+  }
+  dfs(0);
+  return total;
+}
+
+/* ============================================================
+   Propagación (¿se resuelve sin adivinar?)
+   ============================================================ */
+function propagar(ctx, pistas) {
+  const { N, nSosp } = ctx;
+  const dom = [];
+  for (let s = 0; s < nSosp; s++) {
+    let d = ctx.celdasLibres.slice();
+    for (const p of pistas) if (p.tipo === 'u' && p.q[0] === s) d = d.filter(i => p.test(i));
+    dom.push(new Set(d));
+  }
+  const binarias = pistas.filter(p => p.tipo === 'b');
+  const globales = pistas.filter(p => p.tipo === 'g');
+  let cambio = true, vueltas = 0;
+  while (cambio && vueltas < 60) {
+    cambio = false; vueltas++;
+    // arco-consistencia binaria
+    for (const p of binarias) {
+      const [a, b] = p.q;
+      for (const [x, y, dir] of [[a, b, 1], [b, a, 0]]) {
+        for (const i of Array.from(dom[x])) {
+          let ok = false;
+          for (const j of dom[y]) {
+            if (((i / N) | 0) === ((j / N) | 0) || (i % N) === (j % N)) continue;
+            if (dir ? p.test(i, j) : p.test(j, i)) { ok = true; break; }
+          }
+          if (!ok) { dom[x].delete(i); cambio = true; }
+        }
+      }
+    }
+    // filas/columnas: un singleton bloquea su fila y su columna
+    for (let s = 0; s < nSosp; s++) {
+      if (dom[s].size !== 1) continue;
+      const i = dom[s].values().next().value;
+      const r = (i / N) | 0, c = i % N;
+      for (let t = 0; t < nSosp; t++) {
+        if (t === s) continue;
+        for (const j of Array.from(dom[t])) {
+          if (((j / N) | 0) === r || (j % N) === c) { dom[t].delete(j); cambio = true; }
+        }
+      }
+    }
+    // globales de recuento
+    for (const p of globales) {
+      const dentroSeguro = [], puede = [];
+      for (const s of p.q) {
+        let todos = true, alguno = false;
+        for (const i of dom[s]) { if (p.dentro(i)) alguno = true; else todos = false; }
+        if (todos && dom[s].size > 0) dentroSeguro.push(s);
+        if (alguno) puede.push(s);
+      }
+      if (dentroSeguro.length === p.n) {
+        for (const s of puede) {
+          if (dentroSeguro.includes(s)) continue;
+          for (const i of Array.from(dom[s])) if (p.dentro(i)) { dom[s].delete(i); cambio = true; }
+        }
+      }
+      if (puede.length === p.n) {
+        for (const s of puede) for (const i of Array.from(dom[s])) if (!p.dentro(i)) { dom[s].delete(i); cambio = true; }
+      }
+    }
+    for (let s = 0; s < nSosp; s++) if (dom[s].size === 0) return { ok: false, dom };
+  }
+  const ok = dom.every(d => d.size === 1);
+  return { ok, dom, tam: dom.reduce((a, d) => a + d.size, 0) };
+}
+
+/* ============================================================
+   Generación de pistas verdaderas sobre la solución
+   ============================================================ */
+function generarPistas(ctx, rnd) {
+  const { N, celdas, sosp, pos, nSosp } = ctx;
+  const P = [];
+  const hab = i => celdas[i].hab;
+  const fil = i => (i / N) | 0;
+  const col = i => i % N;
+  const mue = i => celdas[i].mueble;
+  const nombre = s => sosp[s].nom;
+  const habsPresentes = Array.from(new Set(celdas.map(c => c.hab)));
+  const cuentaTipo = {};
+  for (const c of celdas) if (c.mueble) cuentaTipo[c.mueble] = (cuentaTipo[c.mueble] || 0) + 1;
+  const add = (tier, fam, txt, tipo, q, extra) => P.push(Object.assign({ tier, fam, txt, tipo, q }, extra));
+  const plural = (n, sing, pl) => n === 1 ? sing : pl;
+  const conDe = n => n.startsWith('el ') ? 'del ' + n.slice(3) : 'de ' + n;
+  const conA = n => n.startsWith('el ') ? 'al ' + n.slice(3) : 'a ' + n;
+
+  const vecinas = j => {
+    const out = []; const r = fil(j), c = col(j);
+    for (const [dr, dc] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const r2 = r + dr, c2 = c + dc;
+      if (r2 >= 0 && c2 >= 0 && r2 < N && c2 < N) out.push(r2 * N + c2);
+    }
+    return out;
+  };
+  const diagonales = j => {
+    const out = []; const r = fil(j), c = col(j);
+    for (const [dr, dc] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+      const r2 = r + dr, c2 = c + dc;
+      if (r2 >= 0 && c2 >= 0 && r2 < N && c2 < N) out.push(r2 * N + c2);
+    }
+    return out;
+  };
+  const esBorde = j => fil(j) === 0 || col(j) === 0 || fil(j) === N - 1 || col(j) === N - 1;
+  const esEsquina = j => (fil(j) === 0 || fil(j) === N - 1) && (col(j) === 0 || col(j) === N - 1);
+
+  /* ---------- unarias ---------- */
+  for (let s = 0; s < nSosp; s++) {
+    const i = pos[s], h = hab(i), nm = nombre(s), gen = sosp[s].g === 'f' ? 'a' : 'o';
+
+    add(1, 'habPos', `${nm} estaba en ${HAB[h].n}.`, 'u', [s], { test: j => hab(j) === h });
+    for (const h2 of rnd.shuffle(habsPresentes.filter(x => x !== h)).slice(0, 3))
+      add(2, 'habNeg', `${nm} no estaba en ${HAB[h2].n}.`, 'u', [s], { test: j => hab(j) !== h2 });
+
+    add(2, 'fila', `${nm} estaba en la fila ${fil(i) + 1}.`, 'u', [s], { test: j => fil(j) === fil(i) });
+    add(2, 'col', `${nm} estaba en la columna ${LETRA(col(i))}.`, 'u', [s], { test: j => col(j) === col(i) });
+    for (let k = 0; k < 2; k++) {
+      let f2 = rnd.int(N); if (f2 === fil(i)) f2 = (f2 + 1) % N;
+      add(2, 'filaNeg', `${nm} no estaba en la fila ${f2 + 1}.`, 'u', [s], { test: j => fil(j) !== f2 });
+      let c2 = rnd.int(N); if (c2 === col(i)) c2 = (c2 + 1) % N;
+      add(2, 'colNeg', `${nm} no estaba en la columna ${LETRA(c2)}.`, 'u', [s], { test: j => col(j) !== c2 });
+    }
+
+    const m = mue(i);
+    if (m) {
+      const M = MUEBLES[m];
+      const unico = cuentaTipo[m] === 1;
+      const indet = M.n.startsWith('las ') ? 'unas ' + M.n.slice(4) : M.n.startsWith('los ') ? 'unos ' + M.n.slice(4) : M.n.startsWith('la ') ? 'una ' + M.n.slice(3) : 'un ' + M.n.slice(3);
+      add(unico ? 1 : 2, 'mueble', `${nm} estaba encima ${unico ? conDe(M.n) : 'de ' + indet}.`, 'u', [s], { test: j => mue(j) === m });
+      add(2, 'muebleGen', `${nm} estaba encima de algún mueble.`, 'u', [s], { test: j => !!mue(j) });
+    } else {
+      add(2, 'muebleGen', `${nm} no estaba encima de ningún mueble.`, 'u', [s], { test: j => !mue(j) });
+    }
+
+    if (esBorde(i)) add(2, 'borde', `${nm} estaba pegad${gen} a una pared exterior de la casa.`, 'u', [s], { test: esBorde });
+    else add(2, 'borde', `${nm} no estaba pegad${gen} a ninguna pared exterior.`, 'u', [s], { test: j => !esBorde(j) });
+    if (esEsquina(i)) add(2, 'borde', `${nm} estaba en una esquina del plano.`, 'u', [s], { test: esEsquina });
+
+    for (const tipo of Object.keys(cuentaTipo)) {
+      if (cuentaTipo[tipo] !== 1) continue;
+      const celM = celdas.find(c => c.mueble === tipo).i;
+      if (vecinas(i).includes(celM))
+        add(3, 'junto', `${nm} estaba pegad${gen} ${conA(MUEBLES[tipo].n)} (por arriba, por abajo o por un lado).`, 'u', [s], { test: j => vecinas(j).includes(celM) });
+      else if (diagonales(i).includes(celM))
+        add(3, 'junto', `${nm} tocaba ${MUEBLES[tipo].n} solo por una esquina.`, 'u', [s], { test: j => diagonales(j).includes(celM) });
+      else if (rnd() < 0.3)
+        add(3, 'juntoNo', `${nm} no tocaba ${MUEBLES[tipo].n} de ninguna manera.`, 'u', [s], { test: j => !vecinas(j).includes(celM) && !diagonales(j).includes(celM) && j !== celM });
+    }
+
+    const conAgua = habsPresentes.filter(h2 => HAB[h2].agua);
+    if (conAgua.length >= 2) {
+      if (HAB[h].agua) add(3, 'agua', `${nm} estaba en una estancia con agua (cocina o baños).`, 'u', [s], { test: j => HAB[hab(j)].agua });
+      else add(3, 'agua', `${nm} no estaba en ninguna estancia con agua.`, 'u', [s], { test: j => !HAB[hab(j)].agua });
+    }
+    for (const duenio of ['Piter', 'Pedro']) {
+      const suyas = habsPresentes.filter(h2 => HAB[h2].de === duenio);
+      if (suyas.length < 2) continue;
+      if (HAB[h].de === duenio) add(3, 'duenio', `${nm} estaba en una de las estancias de ${duenio}.`, 'u', [s], { test: j => HAB[hab(j)].de === duenio });
+      else add(3, 'duenio', `${nm} no estaba en ninguna de las estancias de ${duenio}.`, 'u', [s], { test: j => HAB[hab(j)].de !== duenio });
+    }
+  }
+
+  /* ---------- binarias ---------- */
+  for (let a = 0; a < nSosp; a++) {
+    for (let b = a + 1; b < nSosp; b++) {
+      const A = nombre(a), B = nombre(b), ia = pos[a], ib = pos[b];
+
+      const izq = col(ia) < col(ib) ? [a, b] : [b, a];
+      add(2, 'ordenCol', `${nombre(izq[0])} estaba en una columna más a la izquierda que ${nombre(izq[1])}.`, 'b', izq, { test: (x, y) => (x % N) < (y % N) });
+      const arr = fil(ia) < fil(ib) ? [a, b] : [b, a];
+      add(2, 'ordenFila', `${nombre(arr[0])} estaba en una fila más arriba que ${nombre(arr[1])}.`, 'b', arr, { test: (x, y) => ((x / N) | 0) < ((y / N) | 0) });
+
+      if (hab(ia) === hab(ib)) add(1, 'mismaHab', `${A} y ${B} estaban en la misma estancia.`, 'b', [a, b], { test: (x, y) => hab(x) === hab(y) });
+      else {
+        add(3, 'distintaHab', `${A} y ${B} no estaban en la misma estancia.`, 'b', [a, b], { test: (x, y) => hab(x) !== hab(y) });
+        if (ctx.habContigua(hab(ia), hab(ib)))
+          add(3, 'pared', `${A} y ${B} estaban en dos estancias que comparten pared.`, 'b', [a, b], { test: (x, y) => hab(x) !== hab(y) && ctx.habContigua(hab(x), hab(y)) });
+      }
+
+      const dr = fil(ia) - fil(ib), dc = col(ia) - col(ib);
+      if (Math.abs(dr) === 1 && Math.abs(dc) === 1)
+        add(2, 'diag', `${A} y ${B} se tocaban por una esquina (en diagonal).`, 'b', [a, b], { test: (x, y) => Math.abs(((x / N) | 0) - ((y / N) | 0)) === 1 && Math.abs((x % N) - (y % N)) === 1 });
+      else
+        add(3, 'diagNo', `${A} y ${B} no se tocaban ni por una esquina.`, 'b', [a, b], { test: (x, y) => !(Math.abs(((x / N) | 0) - ((y / N) | 0)) === 1 && Math.abs((x % N) - (y % N)) === 1) });
+
+      if (rnd() < 0.55) {
+        const k = Math.abs(dc), der = dc > 0;
+        const q = der ? [a, b] : [b, a];
+        add(3, 'distCol', `${nombre(q[0])} estaba exactamente ${k} ${plural(k, 'columna', 'columnas')} a la derecha de ${nombre(q[1])}.`, 'b', q, { test: (x, y) => (x % N) - (y % N) === k });
+      }
+      if (rnd() < 0.55) {
+        const k = Math.abs(dr), abajo = dr > 0;
+        const q = abajo ? [a, b] : [b, a];
+        add(3, 'distFila', `${nombre(q[0])} estaba exactamente ${k} ${plural(k, 'fila', 'filas')} por debajo de ${nombre(q[1])}.`, 'b', q, { test: (x, y) => ((x / N) | 0) - ((y / N) | 0) === k });
+      }
+    }
+  }
+
+  /* ---------- globales ---------- */
+  const todos = [];
+  for (let s = 0; s < nSosp; s++) todos.push(s);
+  for (const h of habsPresentes) {
+    const n = todos.filter(s => hab(pos[s]) === h).length;
+    add(n === 0 ? 1 : 2, n === 0 ? 'nadie' : 'cuentaHab',
+      n === 0 ? `En ${HAB[h].n} no había nadie.` : `En ${HAB[h].n} había exactamente ${n} ${plural(n, 'personaje', 'personajes')}.`,
+      'g', todos, { n, dentro: j => hab(j) === h });
+    for (const tipo of ['gato', 'perro', 'humano']) {
+      const grupo = todos.filter(s => sosp[s].tipo === tipo);
+      if (grupo.length < 2) continue;
+      const k = grupo.filter(s => hab(pos[s]) === h).length;
+      const et = tipo === 'gato' ? 'gatos' : tipo === 'perro' ? 'perros' : 'humanos';
+      add(k === 0 ? 2 : 3, 'especie',
+        k === 0 ? `Ningún ${tipo} estaba en ${HAB[h].n}.` : `En ${HAB[h].n} había exactamente ${k} ${plural(k, tipo, et)}.`,
+        'g', grupo, { n: k, dentro: j => hab(j) === h });
+    }
+  }
+  {
+    const n = todos.filter(s => !!mue(pos[s])).length;
+    add(3, 'cuentaMueble', `Exactamente ${n} ${plural(n, 'personaje estaba', 'personajes estaban')} encima de un mueble.`, 'g', todos, { n, dentro: j => !!mue(j) });
+    const mitad = Math.floor(N / 2);
+    const k = todos.filter(s => col(pos[s]) < mitad).length;
+    add(3, 'mitad', `En las columnas A–${LETRA(mitad - 1)} había exactamente ${k} ${plural(k, 'personaje', 'personajes')}.`, 'g', todos, { n: k, dentro: j => (j % N) < mitad });
+    const k2 = todos.filter(s => fil(pos[s]) < mitad).length;
+    add(3, 'mitad', `En las filas 1–${mitad} había exactamente ${k2} ${plural(k2, 'personaje', 'personajes')}.`, 'g', todos, { n: k2, dentro: j => ((j / N) | 0) < mitad });
+  }
+
+  const vistas = new Set();
+  const out = [];
+  for (const p of P) {
+    if (vistas.has(p.txt)) continue;
+    vistas.add(p.txt);
+    let cierta;
+    if (p.tipo === 'u') cierta = p.test(pos[p.q[0]]);
+    else if (p.tipo === 'b') cierta = p.test(pos[p.q[0]], pos[p.q[1]]);
+    else { let hay = 0; for (const s of p.q) if (p.dentro(pos[s])) hay++; cierta = hay === p.n; }
+    if (cierta) out.push(p);
+  }
+  return out;
+}
+
+/* ============================================================
+   Generador principal
+   ============================================================ */
+function generarCaso(nivel, semilla) {
+  const cfg = NIVELES[nivel];
+  const plano = PLANOS[cfg.plano];
+  const N = plano.length;
+
+  for (let intento = 0; intento < 400; intento++) {
+    const rnd = mkRnd((semilla * 7919 + intento * 104729) >>> 0);
+    const mapa = construirMapa(plano, rnd);
+    const celdas = mapa.celdas;
+    const celdasLibres = celdas.filter(libre).map(c => c.i);
+    if (celdasLibres.length < N * 2) continue;
+
+    // contigüidad entre habitaciones
+    const contig = {};
+    for (const c of celdas) {
+      for (const [dr, dc] of [[1, 0], [0, 1]]) {
+        const r2 = c.r + dr, c2 = c.c + dc;
+        if (r2 >= N || c2 >= N) continue;
+        const h2 = plano[r2][c2];
+        if (h2 !== c.hab) { contig[c.hab + h2] = true; contig[h2 + c.hab] = true; }
+      }
+    }
+    const habContigua = (x, y) => !!contig[x + y];
+
+    // sospechosos del caso
+    const sosp = rnd.shuffle(PERSONAJES.slice()).slice(0, cfg.nSosp);
+    const victima = rnd.pick(VICTIMAS);
+
+    // ---- buscar una colocación completa (nSosp + víctima) ----
+    const nOcup = cfg.nSosp + 1;
+    const libresPorFila = [];
+    for (let r = 0; r < N; r++) libresPorFila.push(celdasLibres.filter(i => ((i / N) | 0) === r));
+    let colocacion = null;
+    const filas = rnd.shuffle([...Array(N).keys()]).slice(0, nOcup);
+    (function buscar(k, usadasC, acc) {
+      if (colocacion) return;
+      if (k === nOcup) { colocacion = acc.slice(); return; }
+      for (const i of rnd.shuffle(libresPorFila[filas[k]])) {
+        const c = i % N;
+        if (usadasC.has(c)) continue;
+        usadasC.add(c); acc.push(i);
+        buscar(k + 1, usadasC, acc);
+        acc.pop(); usadasC.delete(c);
+        if (colocacion) return;
+      }
+    })(0, new Set(), []);
+    if (!colocacion) continue;
+
+    // ---- elegir la casilla de la víctima: su estancia debe tener exactamente 1 sospechoso ----
+    const porHabCount = {};
+    for (const i of colocacion) porHabCount[celdas[i].hab] = (porHabCount[celdas[i].hab] || 0) + 1;
+    const candidatas = colocacion.filter(i => porHabCount[celdas[i].hab] === 2);
+    if (!candidatas.length) continue;
+    const celdaVictima = rnd.pick(candidatas);
+    const restantes = rnd.shuffle(colocacion.filter(i => i !== celdaVictima));
+    const pos = restantes.slice();           // pos[s] = celda del sospechoso s
+    const culpable = pos.findIndex(i => celdas[i].hab === celdas[celdaVictima].hab);
+    if (culpable < 0) continue;
+
+    const ctx = { N, celdas, celdasLibres, sosp, pos, nSosp: cfg.nSosp, plano, habContigua };
+
+    // ---- pistas ----
+    const pool = generarPistas(ctx, rnd);
+    const filtrado = pool.filter(p => cfg.tiers.includes(p.tier));
+    const pesos = {};
+    for (const t of cfg.tiers) pesos[t] = (pesos[t] || 0) + 1;
+    const barajado = rnd.shuffle(filtrado).map(p => ({ p, k: (pesos[p.tier] || 0) + rnd() * 1.6 }))
+      .sort((a, b) => b.k - a.k).map(x => x.p);
+
+    let sel = [], unico = false;
+    for (const conTope of [true, false]) {
+      sel = []; unico = false;
+      for (const p of barajado) {
+        if (conTope && !permitida(p, sel, cfg.caps)) continue;
+        sel.push(p);
+        if (sel.length >= 3 && contarSoluciones(ctx, sel, 2) === 1) { unico = true; break; }
+      }
+      if (unico) break;
+    }
+    if (!unico) continue;
+
+    // podar redundantes
+    for (let i = sel.length - 1; i >= 0; i--) {
+      const t = sel.filter((_, j) => j !== i);
+      if (t.length && contarSoluciones(ctx, t, 2) === 1) sel = t;
+    }
+
+    // intentar que sea deducible sin adivinar
+    let prop = propagar(ctx, sel);
+    if (!prop.ok && cfg.propagable) {
+      const resto = barajado.filter(p => !sel.includes(p));
+      for (let k = 0; k < 25 && !prop.ok; k++) {
+        let mejor = null, mejorTam = Infinity;
+        for (const p of resto.slice(0, 70)) {
+          if (sel.includes(p)) continue;
+          if (!permitida(p, sel, cfg.caps)) continue;
+          const r = propagar(ctx, sel.concat([p]));
+          if (!r.dom.every(d => d.size > 0)) continue;
+          if (r.ok) { mejor = p; mejorTam = -1; break; }
+          if (r.tam < mejorTam) { mejorTam = r.tam; mejor = p; }
+        }
+        if (!mejor) break;
+        sel = sel.concat([mejor]);
+        prop = propagar(ctx, sel);
+      }
+      if (!prop.ok) continue;
+    }
+
+    if (sel.length < cfg.minPistas || sel.length > cfg.maxPistas) continue;
+
+    const pistas = rnd.shuffle(sel).map((p, k) => ({ txt: p.txt, tier: p.tier }));
+
+    return {
+      nivel, semilla, N,
+      plano,
+      celdas: celdas.map(c => ({ i: c.i, r: c.r, c: c.c, hab: c.hab, mueble: c.mueble })),
+      sospechosos: sosp,
+      victima,
+      pistas,
+      solucion: pos,
+      celdaVictima,
+      culpable,
+      limpio: prop.ok,
+      _sel: sel, _ctx: ctx,
+    };
+  }
+  return null;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { generarCaso, contarSoluciones, PERSONAJES, HAB, MUEBLES, PLANOS, NIVELES, VICTIMAS, LETRA };
+}
+
+</script>
+<script>
+/* ============================================================
+   SOSPECHOKU — interfaz
+   ============================================================ */
+'use strict';
+
+/* Nombre del juego: cámbialo aquí y se actualiza cabecera y pestaña. */
+const NOMBRE = 'Sospechoku';
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+const APP = {
+  caso: null,
+  nivel: 'unico',
+  colocados: {},      // idxSospechoso -> celda
+  fijados: {},        // idxSospechoso -> true (revelado por pista)
+  marcas: {},         // celda -> true
+  usadas: {},         // nº pista -> true
+  sel: null,
+  modo: 'poner',
+  fase: 'jugando',    // jugando | acusar | fin
+  t0: 0, tick: null, segundos: 0,
+  ayudas: 0,
+  historial: [],
+};
+
+/* ---------------- almacenamiento seguro ---------------- */
+function guardar(k, v) { try { localStorage.setItem('murdoku_' + k, JSON.stringify(v)); } catch (e) { } }
+function leer(k, def) { try { const v = localStorage.getItem('murdoku_' + k); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
+
+/* ---------------- avisos ---------------- */
+let avisoT = null;
+function aviso(txt, tipo) {
+  const el = $('#aviso');
+  el.textContent = txt;
+  el.className = 'aviso visible ' + (tipo || '');
+  clearTimeout(avisoT);
+  avisoT = setTimeout(() => { el.className = 'aviso'; }, 2600);
+}
+
+/* ---------------- reloj ---------------- */
+function fmt(s) { return String((s / 60) | 0).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+function arrancarReloj() {
+  clearInterval(APP.tick);
+  APP.segundos = 0;
+  $('#reloj').textContent = '00:00';
+  APP.tick = setInterval(() => { APP.segundos++; $('#reloj').textContent = fmt(APP.segundos); }, 1000);
+}
+function pararReloj() { clearInterval(APP.tick); APP.tick = null; }
+
+/* ---------------- nuevo caso ---------------- */
+function nuevoCaso(nivel, semilla) {
+  APP.nivel = nivel || APP.nivel;
+  $('#cargando').classList.add('visible');
+  setTimeout(() => {
+    const s = (semilla === undefined || semilla === null || isNaN(semilla))
+      ? (1 + Math.floor(Math.random() * 99999)) : semilla;
+    let caso = null;
+    for (let k = 0; k < 6 && !caso; k++) caso = generarCaso(APP.nivel, s + k * 13337);
+    $('#cargando').classList.remove('visible');
+    if (!caso) { aviso('No he podido montar el caso, prueba otra vez.', 'mal'); return; }
+    APP.caso = caso;
+    APP.colocados = {}; APP.fijados = {}; APP.marcas = {}; APP.usadas = {};
+    APP.sel = null; APP.modo = 'poner'; APP.fase = 'jugando'; APP.ayudas = 0; APP.historial = [];
+    guardar('nivel', APP.nivel);
+    pintarTodo();
+    arrancarReloj();
+  }, 40);
+}
+
+/* ---------------- historial ---------------- */
+function snapshot() {
+  APP.historial.push(JSON.stringify({ c: APP.colocados, m: APP.marcas }));
+  if (APP.historial.length > 80) APP.historial.shift();
+}
+function deshacer() {
+  if (!APP.historial.length) { aviso('No hay nada que deshacer.'); return; }
+  const s = JSON.parse(APP.historial.pop());
+  APP.colocados = s.c; APP.marcas = s.m;
+  APP.fase = 'jugando';
+  pintarTodo();
+}
+
+/* ---------------- lógica de tablero ---------------- */
+function celdaOcupadaPor(i) {
+  for (const k in APP.colocados) if (APP.colocados[k] === i) return +k;
+  return -1;
+}
+function filaOcupadaPor(r, exc) {
+  const N = APP.caso.N;
+  for (const k in APP.colocados) if (+k !== exc && ((APP.colocados[k] / N) | 0) === r) return +k;
+  return -1;
+}
+function colOcupadaPor(c, exc) {
+  const N = APP.caso.N;
+  for (const k in APP.colocados) if (+k !== exc && (APP.colocados[k] % N) === c) return +k;
+  return -1;
+}
+function libreCelda(cel) { return !cel.mueble || MUEBLES[cel.mueble].sit === 1; }
+
+function celdaVictimaActual() {
+  const c = APP.caso, N = c.N;
+  if (Object.keys(APP.colocados).length !== c.sospechosos.length) return -1;
+  const fs = new Set(), cs = new Set();
+  for (const k in APP.colocados) { fs.add((APP.colocados[k] / N) | 0); cs.add(APP.colocados[k] % N); }
+  let fr = -1, cr = -1;
+  for (let r = 0; r < N; r++) if (!fs.has(r)) fr = r;
+  for (let c2 = 0; c2 < N; c2++) if (!cs.has(c2)) cr = c2;
+  if (fr < 0 || cr < 0) return -1;
+  return fr * N + cr;
+}
+
+function tocarCelda(i) {
+  if (APP.fase === 'fin') return;
+  const c = APP.caso, cel = c.celdas[i], N = c.N;
+
+  if (APP.modo === 'x') {
+    snapshot();
+    if (APP.marcas[i]) delete APP.marcas[i]; else APP.marcas[i] = true;
+    pintarTablero();
+    return;
+  }
+
+  const ocupante = celdaOcupadaPor(i);
+  if (ocupante >= 0) {
+    if (APP.fijados[ocupante]) { aviso(c.sospechosos[ocupante].nom + ' está fijad' + (c.sospechosos[ocupante].g === 'f' ? 'a' : 'o') + ' por una ayuda.'); return; }
+    snapshot();
+    delete APP.colocados[ocupante];
+    APP.sel = ocupante;
+    APP.fase = 'jugando';
+    pintarTodo();
+    return;
+  }
+
+  if (APP.sel === null) { aviso('Elige antes un personaje de la lista.'); return; }
+  if (!libreCelda(cel)) { aviso('Ahí no cabe nadie: está ' + MUEBLES[cel.mueble].n + '.', 'mal'); return; }
+
+  const r = (i / N) | 0, cc = i % N;
+  const chocaF = filaOcupadaPor(r, APP.sel), chocaC = colOcupadaPor(cc, APP.sel);
+  if (chocaF >= 0) { aviso('La fila ' + (r + 1) + ' ya la ocupa ' + c.sospechosos[chocaF].nom + '.', 'mal'); return; }
+  if (chocaC >= 0) { aviso('La columna ' + LETRA(cc) + ' ya la ocupa ' + c.sospechosos[chocaC].nom + '.', 'mal'); return; }
+
+  snapshot();
+  APP.colocados[APP.sel] = i;
+  delete APP.marcas[i];
+  const sig = c.sospechosos.findIndex((_, k) => APP.colocados[k] === undefined);
+  APP.sel = sig >= 0 ? sig : null;
+  APP.fase = 'jugando';
+  pintarTodo();
+}
+
+/* ---------------- pintar ---------------- */
+function pintarTodo() { pintarCabecera(); pintarTablero(); pintarSospechosos(); pintarPistas(); pintarAcciones(); }
+
+function pintarCabecera() {
+  const c = APP.caso;
+  $('#titulo-caso').textContent = c.victima.t;
+  $('#victima-em').textContent = c.victima.e;
+  $('#num-caso').textContent = '#' + c.semilla;
+}
+
+function pintarTablero() {
+  const c = APP.caso, N = c.N, cont = $('#tablero');
+  cont.style.setProperty('--n', N);
+  cont.style.gridTemplateColumns = 'var(--hdr) repeat(' + N + ', 1fr)';
+  const celVic = celdaVictimaActual();
+  const anclas = {};
+  for (const cel of c.celdas) if (anclas[cel.hab] === undefined) anclas[cel.hab] = cel.i;
+
+  const filaOcup = {}, colOcup = {};
+  for (const k in APP.colocados) { filaOcup[(APP.colocados[k] / N) | 0] = true; colOcup[APP.colocados[k] % N] = true; }
+
+  let html = '<div class="hdr"></div>';
+  for (let x = 0; x < N; x++) html += '<div class="hdr' + (colOcup[x] ? ' cerrada' : '') + '">' + LETRA(x) + '</div>';
+
+  for (let r = 0; r < N; r++) {
+    html += '<div class="hdr' + (filaOcup[r] ? ' cerrada' : '') + '">' + (r + 1) + '</div>';
+    for (let x = 0; x < N; x++) {
+      const i = r * N + x, cel = c.celdas[i], H = HAB[cel.hab];
+      const ocup = celdaOcupadaPor(i);
+      const bloq = !libreCelda(cel);
+      const cls = ['cel', 'sue-' + H.suelo];
+      if (bloq) cls.push('bloq');
+      if (ocup >= 0) cls.push('con-ficha');
+      if (APP.fijados[ocup] && ocup >= 0) cls.push('fijado');
+      if (i === celVic) cls.push(bloq ? 'victima-mal' : 'victima');
+      if (ocup < 0 && !bloq && i !== celVic && (filaOcup[r] || colOcup[x])) cls.push('cerrada');
+      const bordes = [];
+      const lados = [['Top', r - 1, x], ['Right', r, x + 1], ['Bottom', r + 1, x], ['Left', r, x - 1]];
+      for (const [lado, r2, x2] of lados) {
+        const fuera = r2 < 0 || x2 < 0 || r2 >= N || x2 >= N;
+        const otra = fuera || c.celdas[r2 * N + x2].hab !== cel.hab;
+        bordes.push('border-' + lado.toLowerCase() + ':' + (otra ? '3px solid #16120f' : '1px solid rgba(36,28,22,.22)'));
+      }
+      let dentro = '';
+      if (cel.mueble) {
+        const esc = MUEBLES[cel.mueble].esc;
+        let est = '', clase = 'spr';
+        if (esc) {
+          const lado = 88 * esc, marg = (100 - lado) / 2;
+          est = ' style="left:' + marg + '%;top:' + marg + '%;width:' + lado + '%;height:' + lado + '%"';
+          clase += ' chico';
+        }
+        dentro += '<svg class="' + clase + '" viewBox="0 0 64 64" aria-hidden="true"' + est + '><use href="#mu-' + cel.mueble + '"/></svg>';
+      }
+      if (ocup >= 0) dentro += '<span class="ficha" style="border-color:' + (c.sospechosos[ocup].aro || 'var(--osc)') + '">' + c.sospechosos[ocup].em + '</span>';
+      else if (i === celVic) dentro += '<span class="ficha vic">' + (bloq ? '⚠️' : c.victima.e) + '</span>';
+      if (APP.marcas[i] && ocup < 0) dentro += '<span class="marca">✕</span>';
+      html += '<button class="' + cls.join(' ') + '" data-i="' + i + '" style="--h:' + H.hue + ';--f1:' + H.f1 + ';--f2:' + H.f2 + ';' + bordes.join(';') + '">' + dentro + '</button>';
+    }
+  }
+  cont.innerHTML = html;
+  ajustarTipos();
+  pintarEtiquetas();
+
+  // leyenda
+  const habs = Array.from(new Set(c.celdas.map(x => x.hab)));
+  $('#leyenda').innerHTML = habs.map(h =>
+    '<span class="chip-hab" style="--h:' + HAB[h].hue + '">' + HAB[h].N + '</span>').join('');
+}
+
+function pintarEtiquetas() {
+  const cont = $('#tablero'); if (!cont || !APP.caso) return;
+  let capa = cont.querySelector('.etiquetas');
+  if (!capa) { capa = document.createElement('div'); capa.className = 'etiquetas'; cont.appendChild(capa); }
+  capa.innerHTML = '';
+  const base = cont.getBoundingClientRect();
+  const cajas = {};
+  cont.querySelectorAll('.cel').forEach(b => {
+    const h = APP.caso.celdas[+b.dataset.i].hab;
+    const r = b.getBoundingClientRect();
+    const c = cajas[h] || (cajas[h] = { x1: Infinity, x2: -Infinity, y2: -Infinity, alto: r.height });
+    c.x1 = Math.min(c.x1, r.left); c.x2 = Math.max(c.x2, r.right); c.y2 = Math.max(c.y2, r.bottom);
+  });
+  for (const h in cajas) {
+    const c = cajas[h];
+    const el = document.createElement('span');
+    el.className = 'etiq';
+    el.textContent = HAB[h].ab;
+    el.style.left = ((c.x1 + c.x2) / 2 - base.left) + 'px';
+    el.style.top = (c.y2 - base.top - 3) + 'px';
+    el.style.fontSize = Math.max(8, Math.min(15, c.alto * 0.34)) + 'px';
+    el.style.webkitTextStrokeWidth = Math.max(2, c.alto * 0.07) + 'px';
+    capa.appendChild(el);
+  }
+}
+
+function pintarSospechosos() {
+  const c = APP.caso;
+  $('#sospechosos').innerHTML = c.sospechosos.map((s, k) => {
+    const puesto = APP.colocados[k] !== undefined;
+    return '<button class="sosp' + (APP.sel === k ? ' sel' : '') + (puesto ? ' puesto' : '') + (APP.fijados[k] ? ' fijo' : '') + '" data-s="' + k + '">' +
+      '<span class="em" style="border-color:' + (s.aro || 'var(--bordeA)') + '">' + s.em + '</span><span class="nb">' + s.nom + '</span>' +
+      '<span class="sub">' + s.desc + '</span>' +
+      (puesto ? '<span class="tick">' + (APP.fijados[k] ? '🔒' : '✓') + '</span>' : '') +
+      '</button>';
+  }).join('');
+}
+
+function pintarPistas() {
+  const c = APP.caso;
+  $('#pistas').innerHTML = c.pistas.map((p, k) =>
+    '<li class="pista' + (APP.usadas[k] ? ' usada' : '') + '" data-p="' + k + '"><b>' + (k + 1) + '</b><span>' + p.txt + '</span></li>').join('');
+}
+
+function pintarAcciones() {
+  const c = APP.caso;
+  const total = c.sospechosos.length;
+  const puestos = Object.keys(APP.colocados).length;
+  $('#progreso').textContent = puestos + '/' + total;
+  $('#btn-resolver').disabled = puestos !== total || APP.fase === 'fin';
+  $$('.modo-btn').forEach(b => b.classList.toggle('on', b.dataset.modo === APP.modo));
+
+  const celVic = celdaVictimaActual();
+  const zonaV = $('#zona-victima');
+  if (celVic >= 0) {
+    const cel = c.celdas[celVic];
+    if (!libreCelda(cel)) {
+      zonaV.className = 'zona-victima mal visible';
+      zonaV.innerHTML = 'La casilla que queda libre es <b>' + LETRA(celVic % c.N) + (((celVic / c.N) | 0) + 1) +
+        '</b>, pero ahí está ' + MUEBLES[cel.mueble].n + ': <b>' + c.victima.n + ' no cabe</b>. Algo falla en tu colocación.';
+    } else {
+      zonaV.className = 'zona-victima visible';
+      zonaV.innerHTML = c.victima.e + ' ' + c.victima.n.charAt(0).toUpperCase() + c.victima.n.slice(1) +
+        ' aparece en <b>' + LETRA(celVic % c.N) + (((celVic / c.N) | 0) + 1) + '</b>, en <b>' + HAB[cel.hab].n + '</b>.';
+    }
+  } else {
+    zonaV.className = 'zona-victima';
+    zonaV.innerHTML = '';
+  }
+}
+
+/* ---------------- comprobar y acusar ---------------- */
+function resolver() {
+  const c = APP.caso;
+  let bien = 0;
+  for (let k = 0; k < c.sospechosos.length; k++) if (APP.colocados[k] === c.solucion[k]) bien++;
+  if (bien < c.sospechosos.length) {
+    aviso('Hay ' + bien + ' de ' + c.sospechosos.length + ' personajes en su sitio. Sigue investigando.', 'mal');
+    return;
+  }
+  const celVic = celdaVictimaActual();
+  APP.fase = 'acusar';
+  pintarTablero();
+  $('#modal-acusar').classList.add('visible');
+  $('#acusar-donde').innerHTML = 'Todo cuadra. ' + c.victima.e + ' <b>' + c.victima.n.charAt(0).toUpperCase() + c.victima.n.slice(1) +
+    '</b> apareció en <b>' + LETRA(celVic % c.N) + (((celVic / c.N) | 0) + 1) + '</b>, en <b>' + HAB[c.celdas[celVic].hab].n +
+    '</b>.<br>¿Quién estaba a solas ahí?';
+  $('#acusar-lista').innerHTML = c.sospechosos.map((s, k) =>
+    '<button class="acu" data-a="' + k + '">' + s.em + ' ' + s.nom + '</button>').join('');
+}
+
+function acusar(k) {
+  const c = APP.caso;
+  if (k !== c.culpable) {
+    aviso('No. Fíjate en quién comparte estancia con ' + c.victima.n + '.', 'mal');
+    return;
+  }
+  pararReloj();
+  APP.fase = 'fin';
+  $('#modal-acusar').classList.remove('visible');
+  const s = c.sospechosos[c.culpable];
+  const rec = leer('records', {});
+  const clave = c.nivel;
+  const mejor = rec[clave];
+  let txtRec = '';
+  if (APP.ayudas === 0 && (!mejor || APP.segundos < mejor)) {
+    rec[clave] = APP.segundos; guardar('records', rec);
+    txtRec = '<p class="record">¡Nuevo récord!</p>';
+  } else if (mejor) {
+    txtRec = '<p class="record tenue">Tu mejor tiempo: ' + fmt(mejor) + '</p>';
+  }
+  $('#final-cuerpo').innerHTML =
+    '<div class="culpable-em">' + s.em + '</div>' +
+    '<h2>' + s.nom + '</h2>' +
+    '<p>' + s.desc.charAt(0).toUpperCase() + s.desc.slice(1) + ' estaba a solas con ' + c.victima.n + ' en ' + HAB[c.celdas[c.celdaVictima].hab].n + '. Caso cerrado.</p>' +
+    '<p class="datos">⏱ ' + fmt(APP.segundos) + ' · 💡 ' + APP.ayudas + ' ayuda' + (APP.ayudas === 1 ? '' : 's') + ' · caso #' + c.semilla + '</p>' + txtRec;
+  $('#modal-final').classList.add('visible');
+  pintarTablero();
+}
+
+/* ---------------- ayuda ---------------- */
+function ayuda() {
+  const c = APP.caso;
+  if (APP.fase === 'fin') return;
+  const mal = [];
+  for (let k = 0; k < c.sospechosos.length; k++)
+    if (APP.colocados[k] !== c.solucion[k]) mal.push(k);
+  if (!mal.length) { aviso('Están todos en su sitio: pulsa «Resolver caso».'); return; }
+  const k = mal[Math.floor(Math.random() * mal.length)];
+  snapshot();
+  const ocupa = celdaOcupadaPor(c.solucion[k]);
+  if (ocupa >= 0) delete APP.colocados[ocupa];
+  APP.colocados[k] = c.solucion[k];
+  APP.fijados[k] = true;
+  APP.ayudas++;
+  delete APP.marcas[c.solucion[k]];
+  aviso(c.sospechosos[k].nom + ' estaba en ' + LETRA(c.solucion[k] % c.N) + (((c.solucion[k] / c.N) | 0) + 1) + '.');
+  pintarTodo();
+}
+
+function rendirse() {
+  const c = APP.caso;
+  if (!confirm('¿Seguro que quieres ver la solución? Se acaba el caso.')) return;
+  pararReloj();
+  APP.fase = 'fin';
+  APP.colocados = {};
+  for (let k = 0; k < c.sospechosos.length; k++) APP.colocados[k] = c.solucion[k];
+  APP.fijados = {};
+  pintarTodo();
+  const s = c.sospechosos[c.culpable];
+  aviso('Era ' + s.nom + ', en ' + HAB[c.celdas[c.celdaVictima].hab].n + '.', 'mal');
+}
+
+/* ---------------- eventos ---------------- */
+function conectar() {
+  $('#tablero').addEventListener('click', e => {
+    const b = e.target.closest('.cel'); if (!b) return;
+    tocarCelda(+b.dataset.i);
+  });
+  $('#sospechosos').addEventListener('click', e => {
+    const b = e.target.closest('.sosp'); if (!b) return;
+    const k = +b.dataset.s;
+    APP.sel = k;
+    APP.modo = 'poner';
+    pintarSospechosos(); pintarAcciones();
+  });
+  $('#pistas').addEventListener('click', e => {
+    const li = e.target.closest('.pista'); if (!li) return;
+    const k = +li.dataset.p;
+    if (APP.usadas[k]) delete APP.usadas[k]; else APP.usadas[k] = true;
+    pintarPistas();
+  });
+  $$('.modo-btn').forEach(b => b.addEventListener('click', () => {
+    APP.modo = b.dataset.modo;
+    if (APP.modo === 'x') APP.sel = null;
+    pintarSospechosos(); pintarAcciones();
+  }));
+  $('#btn-nuevo').addEventListener('click', () => nuevoCaso(APP.nivel));
+  $('#btn-deshacer').addEventListener('click', deshacer);
+  $('#btn-limpiar').addEventListener('click', () => { snapshot(); APP.marcas = {}; pintarTablero(); });
+  $('#btn-ayuda').addEventListener('click', ayuda);
+  $('#btn-resolver').addEventListener('click', resolver);
+  $('#btn-solucion').addEventListener('click', rendirse);
+  $('#acusar-lista').addEventListener('click', e => {
+    const b = e.target.closest('.acu'); if (!b) return;
+    acusar(+b.dataset.a);
+  });
+  $('#cerrar-acusar').addEventListener('click', () => { $('#modal-acusar').classList.remove('visible'); APP.fase = 'jugando'; });
+  $('#btn-otro').addEventListener('click', () => { $('#modal-final').classList.remove('visible'); nuevoCaso(APP.nivel); });
+  $('#btn-ver-plano').addEventListener('click', () => $('#modal-final').classList.remove('visible'));
+  $('#btn-reglas').addEventListener('click', () => $('#modal-reglas').classList.add('visible'));
+  $('#cerrar-reglas').addEventListener('click', () => $('#modal-reglas').classList.remove('visible'));
+  $('#btn-ir-caso').addEventListener('click', () => {
+    const v = parseInt($('#input-caso').value, 10);
+    if (isNaN(v) || v < 1) { aviso('Escribe un número de caso.'); return; }
+    nuevoCaso(APP.nivel, v);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'z' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); deshacer(); }
+    if (e.key === 'x') { APP.modo = APP.modo === 'x' ? 'poner' : 'x'; pintarAcciones(); }
+  });
+}
+
+/* ---------- respaldo de tamaños si el navegador no soporta unidades de contenedor ---------- */
+function ajustarTipos() {
+  if (window.CSS && CSS.supports && CSS.supports('width', '1cqw')) return;
+  const t = $('#tablero'); if (!t || !APP.caso) return;
+  const cel = t.querySelector('.cel'); if (!cel) return;
+  const w = cel.getBoundingClientRect().width || 40;
+  t.style.setProperty('--fs-ficha', (w * 0.62) + 'px');
+  t.style.setProperty('--fs-mueble', (w * 0.40) + 'px');
+  t.style.setProperty('--fs-marca', (w * 0.46) + 'px');
+  t.style.setProperty('--fs-rot', Math.max(6, w * 0.20) + 'px');
+}
+window.addEventListener('resize', () => { ajustarTipos(); pintarEtiquetas(); });
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.title = NOMBRE;
+  const lg = $('#logo'); if (lg) lg.addEventListener('error', () => { lg.style.display = 'none'; });
+  const t = $('#titulo'); if (t) t.textContent = NOMBRE.toUpperCase();
+  conectar();
+  nuevoCaso('unico');
+});
+
+</script>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+
+<symbol id="mu-sofa" viewBox="0 0 64 64">
+  <rect x="6" y="11" width="52" height="42" rx="7" fill="var(--mad)"/>
+  <rect x="6" y="11" width="52" height="13" rx="6" fill="var(--mad3)"/>
+  <rect x="6" y="20" width="12" height="33" rx="5" fill="var(--mad3)"/>
+  <rect x="46" y="20" width="12" height="33" rx="5" fill="var(--mad3)"/>
+  <rect x="21" y="27" width="10" height="22" rx="3" fill="var(--cla3)"/>
+  <rect x="33" y="27" width="10" height="22" rx="3" fill="var(--cla3)"/>
+</symbol>
+
+<symbol id="mu-tele" viewBox="0 0 64 64">
+  <rect x="5" y="15" width="54" height="17" rx="3" fill="var(--mad2)"/>
+  <rect x="10" y="19" width="44" height="10" rx="2" fill="var(--gris2)"/>
+  <rect x="24" y="32" width="16" height="6" rx="2" fill="var(--mad2)"/>
+  <rect x="16" y="38" width="32" height="7" rx="3" fill="var(--mad)"/>
+</symbol>
+
+<symbol id="mu-tendal" viewBox="0 0 64 64">
+  <rect x="7" y="11" width="50" height="5" rx="2.5" fill="var(--gris)"/>
+  <rect x="7" y="29" width="50" height="5" rx="2.5" fill="var(--gris)"/>
+  <rect x="7" y="47" width="50" height="5" rx="2.5" fill="var(--gris)"/>
+  <rect x="13" y="8" width="13" height="15" rx="2" fill="var(--cla)"/>
+  <rect x="34" y="26" width="15" height="15" rx="2" fill="var(--mad3)"/>
+  <rect x="15" y="44" width="13" height="13" rx="2" fill="var(--azulm)"/>
+</symbol>
+
+<symbol id="mu-caja" viewBox="0 0 64 64">
+  <rect x="8" y="8" width="48" height="48" rx="3" fill="var(--tierra)"/>
+  <rect x="8" y="28" width="48" height="7" fill="var(--mad2)"/>
+  <path d="M20 14 44 50 M44 14 20 50" fill="none" stroke-width="2" opacity=".4"/>
+</symbol>
+
+<symbol id="mu-caca" viewBox="0 0 64 64">
+  <ellipse cx="32" cy="45" rx="18" ry="8" fill="var(--tierra)"/>
+  <ellipse cx="32" cy="34" rx="12" ry="7" fill="var(--mad2)"/>
+  <ellipse cx="32" cy="25" rx="7" ry="5" fill="var(--mad)"/>
+</symbol>
+
+<symbol id="mu-pis" viewBox="0 0 64 64">
+  <path d="M13 37c0-10 10-16 20-16s20 6 20 14-9 13-20 13-20-3-20-11z" fill="var(--amar)"/>
+  <ellipse cx="25" cy="31" rx="6" ry="3.5" fill="#F2DFA0"/>
+</symbol>
+
+<symbol id="mu-nevera" viewBox="0 0 64 64">
+  <rect x="11" y="6" width="42" height="52" rx="4" fill="var(--cla)"/>
+  <rect x="11" y="24" width="42" height="3.5" fill="var(--cla2)"/>
+  <rect x="45" y="12" width="4" height="9" rx="2" fill="var(--gris2)"/>
+  <rect x="45" y="32" width="4" height="12" rx="2" fill="var(--gris2)"/>
+  <ellipse cx="25" cy="16" rx="7" ry="4.5" fill="var(--tierra)" opacity=".5"/>
+  <ellipse cx="33" cy="45" rx="5" ry="8" fill="var(--tierra)" opacity=".42"/>
+</symbol>
+
+<symbol id="mu-silla" viewBox="0 0 64 64">
+  <rect x="13" y="17" width="38" height="36" rx="4" fill="var(--mad)"/>
+  <rect x="13" y="8" width="38" height="10" rx="3" fill="var(--mad2)"/>
+  <rect x="19" y="23" width="26" height="23" rx="3" fill="var(--mad3)"/>
+</symbol>
+
+<symbol id="mu-papelera" viewBox="0 0 64 64">
+  <circle cx="32" cy="35" r="22" fill="var(--gris2)"/>
+  <circle cx="32" cy="35" r="15" fill="var(--mad2)"/>
+  <path d="M21 25c4-8 10-2 13-8 3-5 9-1 11 5 2 5 7 2 8 7z" fill="var(--cla)"/>
+  <circle cx="41" cy="23" r="4" fill="var(--acen)"/>
+</symbol>
+
+<symbol id="mu-sillapapeles" viewBox="0 0 64 64">
+  <rect x="13" y="17" width="38" height="36" rx="4" fill="var(--mad)"/>
+  <rect x="13" y="8" width="38" height="10" rx="3" fill="var(--mad2)"/>
+  <rect x="16" y="21" width="29" height="21" rx="2" fill="var(--cla2)"/>
+  <rect x="21" y="26" width="29" height="21" rx="2" fill="var(--cla)"/>
+  <path d="M27 34h17M27 40h11" fill="none" stroke-width="1.6" opacity=".45"/>
+</symbol>
+
+<symbol id="mu-cacahuete" viewBox="0 0 64 64">
+  <path d="M17 39c-5 0-9-4-9-9s4-9 9-9c4 0 6 3 9 3s5-3 9-3c6 0 11 5 11 10s-5 10-11 10c-4 0-5-2-9-2s-5 0-9 0z" fill="var(--acen2)"/>
+  <circle cx="50" cy="45" r="3.2" fill="var(--acen2)"/>
+  <circle cx="15" cy="48" r="2.6" fill="var(--acen2)"/>
+  <circle cx="34" cy="51" r="2.1" fill="var(--acen2)"/>
+</symbol>
+
+<symbol id="mu-piano" viewBox="0 0 64 64">
+  <rect x="5" y="15" width="54" height="27" rx="3" fill="var(--mad2)"/>
+  <rect x="8" y="34" width="48" height="13" rx="2" fill="var(--cla)"/>
+  <path d="M18 34v13M27 34v13M37 34v13M46 34v13" fill="none" stroke-width="1.4"/>
+  <rect x="14" y="34" width="5" height="8" fill="var(--osc)"/>
+  <rect x="24" y="34" width="5" height="8" fill="var(--osc)"/>
+  <rect x="41" y="34" width="5" height="8" fill="var(--osc)"/>
+  <rect x="49" y="34" width="5" height="8" fill="var(--osc)"/>
+</symbol>
+
+<symbol id="mu-ordenador" viewBox="0 0 64 64">
+  <rect x="11" y="9" width="42" height="10" rx="2" fill="var(--mad2)"/>
+  <rect x="14" y="11" width="36" height="6" rx="1" fill="var(--oro)"/>
+  <rect x="13" y="30" width="31" height="19" rx="3" fill="var(--cla2)"/>
+  <path d="M18 36h21M18 43h15" fill="none" stroke-width="1.6" opacity=".5"/>
+  <ellipse cx="52" cy="40" rx="5" ry="7" fill="var(--cla2)"/>
+</symbol>
+
+<symbol id="mu-pesas" viewBox="0 0 64 64">
+  <rect x="12" y="17" width="40" height="5" rx="2.5" fill="var(--gris2)"/>
+  <rect x="7" y="11" width="10" height="18" rx="3" fill="var(--osc)"/>
+  <rect x="47" y="11" width="10" height="18" rx="3" fill="var(--osc)"/>
+  <rect x="12" y="41" width="40" height="5" rx="2.5" fill="var(--gris2)"/>
+  <rect x="7" y="35" width="10" height="18" rx="3" fill="var(--osc)"/>
+  <rect x="47" y="35" width="10" height="18" rx="3" fill="var(--osc)"/>
+</symbol>
+
+<symbol id="mu-impresora" viewBox="0 0 64 64">
+  <rect x="8" y="17" width="48" height="32" rx="4" fill="var(--cla2)"/>
+  <rect x="8" y="34" width="48" height="15" rx="3" fill="var(--gris)"/>
+  <rect x="18" y="7" width="28" height="12" rx="2" fill="var(--cla)"/>
+  <rect x="16" y="38" width="27" height="7" rx="2" fill="var(--cla)"/>
+  <circle cx="48" cy="26" r="3" fill="var(--verde)"/>
+</symbol>
+
+<symbol id="mu-sillaazul" viewBox="0 0 64 64">
+  <path d="M14 45 32 34l18 11M32 34v19" fill="none" stroke-width="3.6"/>
+  <rect x="13" y="9" width="38" height="13" rx="5" fill="#47607A"/>
+  <rect x="15" y="20" width="34" height="25" rx="6" fill="var(--azulm)"/>
+  <rect x="21" y="25" width="22" height="15" rx="4" fill="#8DA3B8"/>
+</symbol>
+
+<symbol id="mu-camaperro" viewBox="0 0 64 64">
+  <ellipse cx="32" cy="34" rx="28" ry="22" fill="var(--acen2)"/>
+  <ellipse cx="32" cy="36" rx="20" ry="15" fill="var(--acen)"/>
+  <ellipse cx="32" cy="37" rx="13" ry="9" fill="var(--cla3)"/>
+</symbol>
+
+<symbol id="mu-mesablanca" viewBox="0 0 64 64">
+  <rect x="6" y="12" width="52" height="40" rx="4" fill="var(--cla)"/>
+  <rect x="12" y="18" width="40" height="28" rx="3" fill="var(--cla2)"/>
+</symbol>
+
+<symbol id="mu-vater" viewBox="0 0 64 64">
+  <rect x="16" y="6" width="32" height="14" rx="3" fill="var(--cla2)"/>
+  <ellipse cx="32" cy="38" rx="18" ry="22" fill="var(--cla)"/>
+  <ellipse cx="32" cy="39" rx="11" ry="14" fill="var(--cla3)"/>
+</symbol>
+
+<symbol id="mu-lavabo" viewBox="0 0 64 64">
+  <rect x="9" y="13" width="46" height="38" rx="6" fill="var(--cla)"/>
+  <ellipse cx="32" cy="34" rx="16" ry="12" fill="var(--cla3)"/>
+  <rect x="28" y="14" width="8" height="8" rx="3" fill="var(--gris2)"/>
+</symbol>
+
+<symbol id="mu-espejo" viewBox="0 0 64 64">
+  <rect x="9" y="17" width="46" height="30" rx="4" fill="var(--gris)"/>
+  <rect x="13" y="21" width="38" height="22" rx="2" fill="var(--cla2)"/>
+  <path d="M19 43 34 21M30 43 41 27" fill="none" stroke-width="2.6" opacity=".5"/>
+</symbol>
+
+<symbol id="mu-ducha" viewBox="0 0 64 64">
+  <rect x="7" y="7" width="50" height="50" rx="5" fill="var(--cla2)"/>
+  <circle cx="33" cy="35" r="6.5" fill="var(--cla3)"/>
+  <circle cx="20" cy="19" r="8.5" fill="var(--gris2)"/>
+  <circle cx="20" cy="19" r="4" fill="var(--cla2)"/>
+</symbol>
+
+<symbol id="mu-alfombrilla" viewBox="0 0 64 64">
+  <rect x="7" y="15" width="50" height="34" rx="6" fill="var(--mad)"/>
+  <rect x="13" y="21" width="38" height="22" rx="4" fill="var(--mad3)"/>
+</symbol>
+
+<symbol id="mu-toalla" viewBox="0 0 64 64">
+  <rect x="11" y="13" width="42" height="38" rx="4" fill="var(--cla3)"/>
+  <rect x="11" y="26" width="42" height="5" fill="var(--cla2)"/>
+  <rect x="11" y="36" width="42" height="5" fill="var(--cla2)"/>
+</symbol>
+
+<symbol id="mu-papelmordido" viewBox="0 0 64 64">
+  <circle cx="28" cy="30" r="17" fill="var(--cla)"/>
+  <circle cx="28" cy="30" r="5" fill="var(--cla3)"/>
+  <path d="M45 26c7 3 3 12 9 15" fill="none" stroke-width="7.5" stroke-linecap="round"/>
+  <path d="M17 46c-6 5 3 8-2 11" fill="none" stroke-width="6.5" stroke-linecap="round"/>
+  <circle cx="51" cy="13" r="3.2" fill="var(--cla)"/>
+  <circle cx="11" cy="19" r="2.8" fill="var(--cla)"/>
+</symbol>
+
+<symbol id="mu-ropasuelo" viewBox="0 0 64 64">
+  <path d="M11 40c-4-6 2-14 9-14 6 0 8-6 16-6 8 0 12 5 14 11 2 6 6 9 4 14-3 6-15 7-25 6s-15-5-18-11z" fill="var(--azulm)"/>
+  <path d="M34 44c6-4 15-5 19-1 3 3 0 8-6 9-8 1-16 0-16-3 0-2 1-3 3-5z" fill="var(--acen)"/>
+  <path d="M13 29c-4-3-1-9 4-9 5 0 7 4 5 8-2 2-7 3-9 1z" fill="var(--cla3)"/>
+</symbol>
+
+
+
+
+
+
+<symbol id="mu-calcetines" viewBox="0 0 64 64">
+  <path d="M14 12h11v18c0 6 4 7 9 7 6 0 8 4 8 8s-4 7-9 7c-9 0-19-8-19-19z" fill="var(--cla3)"/>
+  <path d="M36 8h10v14c0 5 4 6 8 6 5 0 7 4 7 7s-4 6-8 6c-8 0-17-7-17-16z" fill="var(--azulm)"/>
+  <path d="M14 20h11M36 16h10" fill="none" stroke-width="2"/>
+</symbol>
+
+<symbol id="mu-cama" viewBox="0 0 64 64">
+  <rect x="9" y="6" width="46" height="52" rx="4" fill="var(--mad)"/>
+  <rect x="12" y="20" width="40" height="36" rx="3" fill="var(--cla3)"/>
+  <rect x="15" y="10" width="34" height="11" rx="3" fill="var(--cla)"/>
+</symbol>
+
+<symbol id="mu-plantaseca" viewBox="0 0 64 64">
+  <path d="M32 34 22 14M32 34 44 16M32 34l-14 6M32 34l15 3" fill="none" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M22 14c-4-2-7 1-6 4M44 16c4-1 6 2 5 5M18 40c-4 1-6-2-5-5M47 37c4 1 5 4 3 6" fill="none" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="32" cy="40" r="15" fill="var(--tierra)"/>
+  <circle cx="32" cy="40" r="9" fill="var(--seco)"/>
+</symbol>
+
+<symbol id="mu-vaso" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="16" fill="var(--cla2)"/>
+  <circle cx="32" cy="32" r="11" fill="var(--cla)"/>
+  <path d="M25 26c2-3 6-4 9-3" fill="none" stroke-width="2" opacity=".55"/>
+</symbol>
+
+<symbol id="mu-mesaordenador" viewBox="0 0 64 64">
+  <rect x="5" y="14" width="54" height="36" rx="3" fill="var(--mad2)"/>
+  <rect x="9" y="18" width="46" height="28" rx="2" fill="var(--mad)"/>
+  <rect x="14" y="46" width="36" height="6" rx="2" fill="var(--mad2)"/>
+</symbol>
+
+<symbol id="mu-guitarra" viewBox="0 0 64 64">
+  <rect x="29" y="6" width="7" height="26" rx="2" fill="var(--mad2)"/>
+  <rect x="27" y="4" width="11" height="7" rx="2" fill="var(--osc)"/>
+  <ellipse cx="32" cy="42" rx="17" ry="16" fill="var(--mad)"/>
+  <ellipse cx="32" cy="32" rx="13" ry="10" fill="var(--mad)"/>
+  <circle cx="32" cy="38" r="5" fill="var(--osc)"/>
+</symbol>
+
+</defs></svg>
+
+</body>
+</html>
