@@ -72,8 +72,8 @@ h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;margin:0}
 header{
   display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;
   padding:.85rem clamp(.7rem,2.4vw,1.6rem);
-  padding-top:calc(.85rem + env(safe-area-inset-top,0px));
-  min-height:calc(2.2rem + env(safe-area-inset-top,0px));
+  padding-top:calc(.85rem + var(--safeTop, env(safe-area-inset-top, 0px)));
+  min-height:calc(2.6rem + var(--safeTop, env(safe-area-inset-top, 0px)));
   padding-left:max(clamp(.7rem,2.4vw,1.6rem),env(safe-area-inset-left));
   padding-right:max(clamp(.7rem,2.4vw,1.6rem),env(safe-area-inset-right));
   border-bottom:1px solid var(--bordeB); background:var(--hdrTop);
@@ -503,7 +503,7 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
   .tablero{border-width:3px}
   .sospechosos{grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:.35rem}
   .sosp .nb{font-size:.66rem}
-  header{gap:.5rem;padding-top:calc(.6rem + env(safe-area-inset-top));padding-bottom:.6rem}
+  header{gap:.5rem;padding-top:calc(.6rem + var(--safeTop, env(safe-area-inset-top, 0px)));padding-bottom:.6rem}
   h1{font-size:1.15rem}
   .sello{display:none}
   .icono-btn{width:2.5rem;height:2.5rem}
@@ -1646,7 +1646,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /* Nombre del juego: cámbialo aquí y se actualiza cabecera y pestaña. */
 const NOMBRE = 'Sospechoku';
-const VERSION = '2.1';
+const VERSION = '2.2';
 
 /* ---------------- sonido ----------------
    Todo sintetizado con WebAudio: ni un archivo externo, el juego sigue
@@ -2854,18 +2854,45 @@ function ajustarTablero() {
   t.style.width = Math.floor(lado) + 'px';
 }
 
+/* El hueco de la isla dinámica: en teoría lo da env(safe-area-inset-top), pero
+   si el navegador no lo informa (o alguna regla lo pisa) los botones acaban
+   debajo del reloj. Así que se mide con una sonda y, si sale cero estando en
+   modo aplicación, se fuerza un valor razonable. */
+function medirHuecoSuperior() {
+  const sonda = document.createElement('div');
+  sonda.style.cssText = 'position:fixed;top:0;left:0;width:0;visibility:hidden;height:env(safe-area-inset-top,0px)';
+  document.body.appendChild(sonda);
+  let alto = sonda.getBoundingClientRect().height || 0;
+  sonda.remove();
+
+  const enApp = (window.navigator && window.navigator.standalone === true) ||
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+    (window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches);
+  const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '');
+
+  if (alto < 8 && enApp && iOS) {
+    /* Sin dato fiable: se estima por la relación de pantalla. Los iPhone con
+       isla o muesca son más alargados que 2:1. */
+    const largo = window.screen && window.screen.height ? window.screen.height / window.screen.width : 0;
+    alto = largo > 2 ? 54 : 24;
+  }
+  document.documentElement.style.setProperty('--safeTop', alto + 'px');
+  return alto;
+}
+
 function medirCabecera() {
   const h = document.querySelector('header');
   if (h) document.documentElement.style.setProperty('--hdrH', h.getBoundingClientRect().height + 'px');
 }
-window.addEventListener('resize', () => { medirCabecera(); ajustarTablero(); ajustarTipos(); pintarEtiquetas(); });
+window.addEventListener('resize', () => { medirHuecoSuperior(); medirCabecera(); ajustarTablero(); ajustarTipos(); pintarEtiquetas(); });
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) SFX.pararMisterio();
 });
-window.addEventListener('orientationchange', () => setTimeout(() => { medirCabecera(); ajustarTablero(); pintarEtiquetas(); }, 250));
+window.addEventListener('orientationchange', () => setTimeout(() => { medirHuecoSuperior(); medirCabecera(); ajustarTablero(); pintarEtiquetas(); }, 250));
 
 window.addEventListener('DOMContentLoaded', () => {
   document.title = NOMBRE;
+  medirHuecoSuperior();
   medirCabecera();
   ajustarTablero();
   setInterval(() => { if (!APP.repartiendo && document.body.classList.contains('reparto')) document.body.classList.remove('reparto'); }, 2000);
