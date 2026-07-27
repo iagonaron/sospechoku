@@ -7,9 +7,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sospechoku">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="apple-touch-icon" href="iconos/icon-180.png">
-<link rel="icon" type="image/png" sizes="32x32" href="iconos/icon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="iconos/icon-192.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./iconos/icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Sospechoku</title>
@@ -62,6 +63,7 @@ body{
   min-height:100vh; min-height:100svh;
   padding:0 0 calc(3rem + env(safe-area-inset-bottom));
   overscroll-behavior-y:contain;
+  overflow-x:hidden;max-width:100%;
 }
 h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;margin:0}
 
@@ -69,6 +71,7 @@ h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;margin:0}
 header{
   display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;
   padding:.85rem clamp(.7rem,2.4vw,1.6rem);
+  padding-top:calc(.85rem + env(safe-area-inset-top));
   padding-left:max(clamp(.7rem,2.4vw,1.6rem),env(safe-area-inset-left));
   padding-right:max(clamp(.7rem,2.4vw,1.6rem),env(safe-area-inset-right));
   border-bottom:1px solid var(--bordeB); background:var(--hdrTop);
@@ -135,11 +138,12 @@ main{
   display:grid;--hdr:1.15rem;gap:0;
   background:var(--tabBg);border:5px solid var(--tabBorde);border-radius:6px;padding:0;
   box-shadow:0 0 0 2px var(--oro),10px 10px 0 rgba(0,0,0,.35), var(--sombra);overflow:hidden;
-  /* El tablero es cuadrado: se queda con el menor entre el ancho disponible y
-     la altura que sobra tras la cabecera, para que quepa entero sin hacer zoom
-     y siga dejando sitio a las pistas. */
+  /* Primero el ancho seguro; la segunda regla lo afina en navegadores que
+     entienden svh. Si no la entienden (iOS 15 y anteriores) la descartan y se
+     quedan con el 100%, en vez de dejar el tablero sin ancho y desbordando. */
+  width:100%;
   width:min(100%, calc(100svh - var(--hdrH,3.6rem) - 12.5rem));
-  max-width:620px;margin:0 auto
+  max-width:min(620px,100%);margin:0 auto
 }
 .hdr{
   display:flex;align-items:center;justify-content:center;
@@ -572,11 +576,6 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
       <button class="abtn" id="btn-ayuda">💡 Ayuda</button>
       <button class="abtn principal" id="btn-resolver" disabled>🔍 Resolver caso</button>
       <button class="abtn" id="btn-solucion">🏳️ Ver solución</button>
-    </div>
-    <div class="ir-caso">
-      Repetir un caso concreto:
-      <input id="input-caso" type="number" inputmode="numeric" placeholder="nº">
-      <button class="hbtn" id="btn-ir-caso">Ir</button>
     </div>
   </section>
 </main>
@@ -2356,11 +2355,6 @@ function conectar() {
   $('#btn-leyenda').addEventListener('click', () => { SFX.play('toque'); pintarLeyendaModal(); $('#modal-leyenda').classList.add('visible'); });
   $('#cerrar-leyenda').addEventListener('click', () => $('#modal-leyenda').classList.remove('visible'));
   $('#cerrar-reglas').addEventListener('click', () => $('#modal-reglas').classList.remove('visible'));
-  $('#btn-ir-caso').addEventListener('click', () => {
-    const v = parseInt($('#input-caso').value, 10);
-    if (isNaN(v) || v < 1) { aviso('Escribe un número de caso.'); return; }
-    nuevoCaso(APP.nivel, v);
-  });
   document.addEventListener('keydown', e => {
     if (e.key === 'z' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); deshacer(); }
     if (e.key === 'x') { APP.modo = APP.modo === 'x' ? 'poner' : 'x'; pintarAcciones(); }
