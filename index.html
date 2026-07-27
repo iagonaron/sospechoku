@@ -52,7 +52,7 @@ body.claro{
 }
 
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-html{margin:0;padding:0;overflow-x:hidden;max-width:100%}
+html{margin:0;padding:0}
 body{margin:0;padding:0}
 body{
   background:
@@ -64,7 +64,7 @@ body{
   min-height:100vh; min-height:100svh;
   padding:0 0 calc(3rem + env(safe-area-inset-bottom));
   overscroll-behavior-y:contain;
-  overflow-x:hidden;max-width:100%;
+  max-width:100%;
 }
 h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;margin:0}
 
@@ -120,8 +120,12 @@ h1 span{color:var(--oro);font-style:italic;font-weight:400;font-size:.72em}
 main{
   display:grid;gap:clamp(.9rem,2.4vw,1.6rem);
   padding:clamp(.9rem,2.4vw,1.6rem);max-width:1180px;margin:0 auto;
-  grid-template-columns:1fr
+  min-width:0;
+  /* minmax(0,...) y no 1fr: si no, la columna se ensancha hasta el tamaño
+     intrínseco del tablero y arrastra toda la página fuera de la pantalla. */
+  grid-template-columns:minmax(0,1fr)
 }
+main > *{min-width:0}
 @media(min-width:940px){ main{grid-template-columns:minmax(340px,1fr) 350px;align-items:start} }
 
 /* ---------- tablero ---------- */
@@ -535,6 +539,7 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
 <header>
   <div class="marca"><img id="logo" src="data:image/jpeg;base64,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" alt="" width="38" height="38"><h1 id="titulo"></h1></div>
   <span class="sello">8 sospechosos · 9×9</span>
+  <button class="icono-btn" id="btn-pantalla" title="Pantalla completa" hidden>⛶</button>
   <button class="icono-btn" id="btn-sonido" title="Sonido"></button>
   <button class="icono-btn dado" id="btn-nuevo" title="Caso nuevo">⚄</button>
   <button class="icono-btn" id="btn-reglas" title="Cómo se juega">?</button>
@@ -2386,6 +2391,31 @@ window.addEventListener('orientationchange', () => setTimeout(medirCabecera, 250
 window.addEventListener('DOMContentLoaded', () => {
   document.title = NOMBRE;
   medirCabecera();
+  /* Pantalla completa de verdad: en Android funciona; en iPhone Safari no
+     expone la API, así que allí el botón ni aparece y la vía es el atajo de
+     pantalla de inicio, que ya abre sin barras. */
+  const bp = $('#btn-pantalla');
+  const raiz = document.documentElement;
+  const puedePantalla = !!(raiz.requestFullscreen || raiz.webkitRequestFullscreen);
+  if (puedePantalla) {
+    bp.hidden = false;
+    bp.addEventListener('click', () => {
+      SFX.play('toque');
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      } else {
+        (raiz.requestFullscreen || raiz.webkitRequestFullscreen).call(raiz);
+      }
+      setTimeout(medirCabecera, 300);
+    });
+    document.addEventListener('fullscreenchange', () => {
+      bp.textContent = document.fullscreenElement ? '⛶' : '⛶';
+      bp.classList.toggle('apagado', !document.fullscreenElement);
+      setTimeout(() => { medirCabecera(); pintarEtiquetas(); }, 200);
+    });
+    bp.classList.add('apagado');
+  }
+
   const bs = $('#btn-sonido');
   const pintaSon = () => { bs.textContent = SFX.on ? '🔊' : '🔇'; bs.classList.toggle('apagado', !SFX.on); };
   pintaSon();
