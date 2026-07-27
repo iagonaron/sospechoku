@@ -87,8 +87,11 @@ h1{
 .ver{font-size:.62rem;font-weight:700;letter-spacing:.06em;color:var(--oro);opacity:.75;
   align-self:flex-start;margin-top:.15rem}
 #logo{border-radius:9px;flex:none;box-shadow:0 0 0 1px var(--oro),0 2px 8px rgba(0,0,0,.5)}
-header .marca{display:flex;align-items:center;gap:.6rem}
-.sello{margin-left:auto;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+header{flex-wrap:nowrap}
+header .marca{display:flex;align-items:center;gap:.6rem;min-width:0;flex:0 1 auto}
+header .marca h1{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iconos{display:flex;align-items:center;gap:.4rem;flex:none;margin-left:auto}
+.sello{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
   color:var(--oro);border:1px solid var(--bordeC);padding:.3rem .6rem;border-radius:999px;white-space:nowrap}
 h1 span{color:var(--oro);font-style:italic;font-weight:400;font-size:.72em}
 .niveles{display:flex;gap:.3rem;margin-left:auto;background:var(--sup);padding:.22rem;border-radius:999px}
@@ -386,7 +389,7 @@ body.reparto .pista{animation:entraPista .28s ease backwards;animation-delay:var
   font-size:.68rem;font-weight:700;letter-spacing:.02em;padding:.22rem .55rem;border-radius:999px;
   background:hsl(var(--h) 26% 20%);color:hsl(var(--h) 45% 78%);border:1px solid hsl(var(--h) 30% 30%)
 }
-#leyenda-cuerpo{text-align:left}
+#leyenda-cuerpo{text-align:left;margin-top:1rem;border-top:1px solid var(--bordeB);padding-top:.5rem}
 .ley-hab{
   font-family:'Playfair Display',Georgia,serif;font-size:.95rem;margin:.9rem 0 .35rem;
   color:var(--oro);border-bottom:1px solid var(--bordeB);padding-bottom:.15rem
@@ -809,10 +812,12 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
 <header>
   <div class="marca"><img id="logo" src="data:image/webp;base64,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" alt="" width="38" height="38"><h1 id="titulo"></h1><span class="ver" id="ver"></span></div>
   <span class="sello">8 sospechosos · 9×9</span>
-  <button class="icono-btn" id="btn-pantalla" title="Pantalla completa" hidden>⛶</button>
-  <button class="icono-btn" id="btn-sonido" title="Sonido"></button>
-  <button class="icono-btn dado" id="btn-nuevo" title="Caso nuevo">⚄</button>
-  <button class="icono-btn" id="btn-reglas" title="Cómo se juega">?</button>
+  <div class="iconos">
+    <button class="icono-btn" id="btn-pantalla" title="Pantalla completa" hidden>⛶</button>
+    <button class="icono-btn" id="btn-sonido" title="Sonido"></button>
+    <button class="icono-btn dado" id="btn-nuevo" title="Caso nuevo">⚄</button>
+    <button class="icono-btn" id="btn-reglas" title="Cómo se juega y leyenda">?</button>
+  </div>
 </header>
 
 <div class="barra-caso">
@@ -838,7 +843,6 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
       <button class="hbtn modo-btn on" data-modo="poner">👤 Colocar</button>
       <button class="hbtn modo-btn" data-modo="x">✕ Descartar</button>
       <button class="hbtn" id="btn-deshacer">↩ Deshacer</button>
-      <button class="hbtn" id="btn-leyenda">📖 Leyenda</button>
     </div>
 
     <div class="carril"><span id="barra-progreso"></span></div>
@@ -913,14 +917,6 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
   </div>
 </div>
 
-<div class="modal" id="modal-leyenda">
-  <div class="caja reglas">
-    <h2>Leyenda</h2>
-    <div id="leyenda-cuerpo"></div>
-    <button class="hbtn" id="cerrar-leyenda">Cerrar</button>
-  </div>
-</div>
-
 <div class="modal" id="modal-reglas">
   <div class="caja reglas">
     <h2>Cómo se juega <span class="ver" id="reglas-ver" style="font-size:.6rem"></span></h2>
@@ -932,6 +928,7 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
       <li><b>El culpable es quien se quedó a solas con la víctima</b> en la misma estancia.</li>
     </ol>
     <p class="tip">Toca un personaje y luego una casilla para colocarlo. Con <b>✕ Descartar</b> marcas casillas imposibles, igual que con lápiz. Toca una pista para tacharla.</p>
+    <div id="leyenda-cuerpo"></div>
     <button class="hbtn" id="cerrar-reglas">Entendido</button>
   </div>
 </div>
@@ -1646,7 +1643,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /* Nombre del juego: cámbialo aquí y se actualiza cabecera y pestaña. */
 const NOMBRE = 'Sospechoku';
-const VERSION = '2.2';
+const VERSION = '2.3';
 
 /* ---------------- sonido ----------------
    Todo sintetizado con WebAudio: ni un archivo externo, el juego sigue
@@ -2748,7 +2745,11 @@ function conectar() {
   $('#cerrar-acusar').addEventListener('click', () => { $('#modal-acusar').classList.remove('visible'); APP.fase = 'jugando'; });
   $('#btn-otro').addEventListener('click', () => { $('#modal-final').classList.remove('visible'); nuevoCaso(APP.nivel); });
   $('#btn-ver-plano').addEventListener('click', () => $('#modal-final').classList.remove('visible'));
-  $('#btn-reglas').addEventListener('click', () => $('#modal-reglas').classList.add('visible'));
+  $('#btn-reglas').addEventListener('click', () => {
+    SFX.play('toque');
+    pintarLeyendaModal();
+    $('#modal-reglas').classList.add('visible');
+  });
   $('#btn-empezar').addEventListener('click', () => {
     if (!APP.empezarPartida) return;
     const c = $('#cargando');
@@ -2758,8 +2759,6 @@ function conectar() {
     /* Tres segundos de secuencia: mano, cuaderno y diario abierto con zoom. */
     setTimeout(() => { if (APP.empezarPartida) APP.empezarPartida(); }, 4150);
   });
-  $('#btn-leyenda').addEventListener('click', () => { SFX.play('toque'); pintarLeyendaModal(); $('#modal-leyenda').classList.add('visible'); });
-  $('#cerrar-leyenda').addEventListener('click', () => $('#modal-leyenda').classList.remove('visible'));
   $('#cerrar-reglas').addEventListener('click', () => $('#modal-reglas').classList.remove('visible'));
   document.addEventListener('keydown', e => {
     if (e.key === 'z' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); deshacer(); }
