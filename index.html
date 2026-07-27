@@ -244,6 +244,16 @@ main > section{margin-bottom:clamp(.9rem,2.4vw,1.6rem)}
 }
 .cel .sup > span{display:block;width:100%;overflow:hidden;text-overflow:ellipsis}
 .cel .sup.mas{background:rgba(255,248,236,.9)}
+.cel .sup{position:relative}
+.cel .sup.aqui-no{filter:saturate(.5) brightness(.86)}
+.cel .sup.aqui-no > span{text-decoration:line-through;text-decoration-color:#A8302A;opacity:.75}
+.cel .sello-no{
+  position:absolute;right:1%;top:50%;transform:translateY(-50%) rotate(-9deg);
+  font-size:.92em;font-weight:900;letter-spacing:-.03em;line-height:1;
+  color:#A8302A;padding:0 .12em;border:.18em solid #A8302A;border-radius:.15em;
+  background:rgba(255,248,236,.92);
+  text-shadow:0 0 2px rgba(255,255,255,.9)
+}
 .cel .sup.resalta{outline:2px solid #16120f;transform:scale(1.14)}
 .cel .marca{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
@@ -401,6 +411,7 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
   font-size:.8rem;font-weight:800;background:var(--sup);border:1px solid var(--bordeA)
 }
 .mini.x{color:#A32D1D}
+.rojo-no{color:#C1483F}
 .mini.cuad{color:rgba(12,9,6,.85);border-color:rgba(12,9,6,.55);font-size:.6rem;letter-spacing:.02em;width:2.1rem}
 .nota-leyenda{text-align:center;font-size:.72rem;color:var(--tenue);margin:.45rem 0 0}
 
@@ -909,7 +920,7 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
 
 <div class="modal" id="modal-reglas">
   <div class="caja reglas">
-    <h2>Cómo se juega <span class="ver" style="font-size:.6rem">v2.0</span></h2>
+    <h2>Cómo se juega <span class="ver" id="reglas-ver" style="font-size:.6rem"></span></h2>
     <ol>
       <li><b>Una persona por fila y por columna.</b> Si colocas a alguien en la fila 3, nadie más puede estar en la fila 3 ni en su columna.</li>
       <li><b>Todas las pistas son verdaderas</b> y se cumplen a la vez. No hay que adivinar nunca: todos los casos se resuelven razonando.</li>
@@ -1632,7 +1643,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /* Nombre del juego: cámbialo aquí y se actualiza cabecera y pestaña. */
 const NOMBRE = 'Sospechoku';
-const VERSION = '2.0';
+const VERSION = '2.1';
 
 /* ---------------- sonido ----------------
    Todo sintetizado con WebAudio: ni un archivo externo, el juego sigue
@@ -1820,6 +1831,10 @@ const SFX = {
            se corta sola en cuanto entra la partida. */
         this.nota(150, t, 0.5, 'sine', 0.18, 80);
         this.misterio();
+        break;
+      case 'sello-no':
+        this.golpe(t, 0.09, 0.13, 700);
+        this.nota(196, t, 0.14, 'triangle', 0.13, 147);
         break;
       case 'sello':
         this.nota(78, t, 0.34, 'sine', 0.26, 50);
@@ -2115,8 +2130,13 @@ function tocarCelda(i, corta) {
     if (!libreCelda(cel)) { aviso('Ahí no cabe nadie: está ' + MUEBLES[cel.mueble].n + '.', 'mal'); SFX.play('error'); return; }
     if (celdaOcupadaPor(i) >= 0) { aviso('Esa casilla ya está ocupada.'); SFX.play('error'); return; }
     snapshot();
+    /* Ciclo de tres toques: 1 = puede estar aquí, 2 = aquí seguro que no,
+       3 = se borra. El estado 2 lleva su sello NO. */
     const bolsa = APP.supuestos[i] || (APP.supuestos[i] = {});
-    if (bolsa[APP.sel]) { delete bolsa[APP.sel]; SFX.play('quita'); } else { bolsa[APP.sel] = true; SFX.play('chip'); }
+    const est = bolsa[APP.sel];
+    if (!est) { bolsa[APP.sel] = 1; SFX.play('chip'); }
+    else if (est !== 2) { bolsa[APP.sel] = 2; SFX.play('sello-no'); vibra(14); }
+    else { delete bolsa[APP.sel]; SFX.play('quita'); }
     if (!Object.keys(bolsa).length) delete APP.supuestos[i];
     pintarTablero();
     const nuevo = document.querySelector('#tablero .cel[data-i="' + i + '"] .sup:last-child');
@@ -2328,8 +2348,11 @@ function pintarTablero() {
         const visibles = claves.length > 3 ? claves.slice(0, 2) : claves;
         let chips = visibles.map(k => {
           const sp = c.sospechosos[+k];
-          return '<i class="sup' + (APP.sel === +k ? ' resalta' : '') + '" style="background:' + sp.aro + '">' +
-            '<span>' + (sp.corto || sp.nom) + '</span></i>';
+          const descartado = APP.supuestos[i][k] === 2;
+          return '<i class="sup' + (APP.sel === +k ? ' resalta' : '') + (descartado ? ' aqui-no' : '') +
+            '" style="background:' + sp.aro + '">' +
+            '<span>' + (sp.corto || sp.nom) + '</span>' +
+            (descartado ? '<b class="sello-no">NO</b>' : '') + '</i>';
         }).join('');
         if (claves.length > 3) chips += '<i class="sup mas"><span>+' + (claves.length - 2) + '</span></i>';
         dentro += '<span class="supuestos">' + chips + '</span>';
@@ -2454,7 +2477,7 @@ function pintarLeyendaModal() {
   html += '<h3 class="ley-hab">Marcas del tablero</h3><ul class="ley marcas-ley">' +
     '<li><span class="mini x">✕</span><span>Casilla descartada: ahí seguro que no hay nadie.</span></li>' +
     '<li><span class="tira-ej" style="background:' + s0.aro + '">' + (s0.corto || s0.nom) + '</span>' +
-      '<span>Posibilidad apuntada: toque corto sobre la casilla con el personaje elegido. Otro toque la quita. Caben tres por casilla; a partir de ahí se cuentan.</span></li>' +
+      '<span>Toque corto: apunta que <b>puede</b> estar ahí. Segundo toque: sello <b class="rojo-no">NO</b>, ahí seguro que no. Tercer toque: se borra.</span></li>' +
     '<li><span class="mini">⏱</span><span>Mantener pulsado coloca al personaje de verdad. Y si ya hay alguien, mantener pulsado lo quita.</span></li>' +
     '<li><span class="mini">✓</span><span>Personaje ya colocado en el plano.</span></li>' +
     '<li><span class="mini">🔒</span><span>Colocado por una ayuda: no se puede mover.</span></li>' +
@@ -2883,6 +2906,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const t = $('#titulo'); if (t) t.textContent = NOMBRE.toUpperCase();
   const vv = $('#ver'); if (vv) vv.textContent = 'v' + VERSION;
   const cv = $('#corcho-ver'); if (cv) cv.textContent = 'versión ' + VERSION;
+  const rv = $('#reglas-ver'); if (rv) rv.textContent = 'v' + VERSION;
   conectar();
   /* La portada no es decorativa: el navegador prohíbe el sonido hasta que hay un
      clic, así que el botón hace de llave. Al pulsarlo el audio queda desbloqueado
