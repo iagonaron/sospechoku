@@ -485,6 +485,11 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
 .hbtn:disabled{opacity:.4;cursor:default}
 
 /* ---------- sospechosos ---------- */
+#sospechosos:empty{display:none}
+#sospechosos.solo-victima{
+  display:flex;justify-content:center;max-width:620px;margin:.9rem auto 0
+}
+#sospechosos.solo-victima .sosp{width:min(46vw,150px)}
 .sospechosos{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:.5rem;
   margin:.9rem auto 0;max-width:620px
@@ -2513,17 +2518,13 @@ function pintarEtiquetas() {
   }
 }
 
+/* Ya no hay rejilla de fotos: las tarjetas de pista hacen de selector. Aquí
+   solo queda la carta de la víctima, que aparece al colocar a los ocho. */
 function pintarSospechosos() {
-  const c = APP.caso;
-  $('#sospechosos').innerHTML = c.sospechosos.map((s, k) => {
-    const puesto = APP.colocados[k] !== undefined;
-    return '<button class="sosp' + (APP.sel === k ? ' sel' : '') + (puesto ? ' puesto' : '') + (APP.fijados[k] ? ' fijo' : '') + '" data-s="' + k + '">' +
-      retrato(s, 'carta') +
-      '<span class="nb">' + s.nom + '</span>' +
-      (puesto ? '<span class="tick">' + (APP.fijados[k] ? '🔒' : '✓') + '</span>' : '') +
-      '</button>';
-  }).join('') + cartaVictima();
-  if (APP.repartiendo) $$('#sospechosos .sosp').forEach((b, k) => b.style.setProperty('--dCarta', (0.55 + k * 0.05) + 's'));
+  const cont = $('#sospechosos');
+  if (!cont || !APP.caso) return;
+  cont.innerHTML = APP.victimaLista ? cartaVictima() : '';
+  cont.classList.toggle('solo-victima', APP.victimaLista);
 }
 
 /* La víctima vive con los sospechosos: apagada hasta que estén los ocho. */
@@ -2588,8 +2589,9 @@ function pintarPistas() {
   c.sospechosos.forEach((sp, k) => {
     const ks = suyas[k];
     if (!ks.length) return;
-    const usada = ks.every(i => APP.usadas[i]);
     const puesto = APP.colocados[k] !== undefined;
+    /* Colocado el personaje, su pista ya no hace falta: se tacha sola. */
+    const usada = puesto || ks.every(i => APP.usadas[i]);
     const ref = ks.map(i => c.pistas[i].ref).find(Boolean);
     html += '<li class="ficha-pista' + (APP.sel === k ? ' sel' : '') + (puesto ? ' puesto' : '') +
         (usada ? ' usada' : '') + '" data-cara="' + k + '" data-ks="' + ks.join(',') + '"' +
