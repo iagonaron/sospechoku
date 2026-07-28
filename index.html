@@ -833,6 +833,35 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
 /* --- el pasillo: zona de referencia, nadie se queda ahí --- */
 .cel.vacia{background-image:repeating-linear-gradient(135deg,rgba(36,28,22,.10) 0 5px,rgba(36,28,22,0) 5px 11px);cursor:default}
 .cel.vacia .marca.auto{display:none}
+/* --- el caso no cuadra: sello propio, que se note --- */
+/* El sello va arriba del todo y el cuerpo le deja sitio. Centrado como estaba
+   se comía lo importante: en el caso resuelto tapaba la cara del culpable, que
+   es justo el premio, y en el fallido, el texto entero. */
+.sello-caso{top:2.2rem;white-space:nowrap;font-size:clamp(.95rem,4.6vw,1.35rem);border-width:4px}
+#final-cuerpo,#fallo-cuerpo{padding-top:3.9rem}
+#fallo-cuerpo h2{font-family:'Playfair Display',Georgia,serif;margin:.2rem 0 .5rem;color:var(--tinta)}
+#fallo-cuerpo p{margin:.3rem 0}
+#fallo-cuerpo .datos{color:var(--tenue);font-size:.8rem;margin-top:.7rem}
+.sello-caso.fallo{
+  color:rgba(158,146,132,.95);border-color:rgba(158,146,132,.95);
+  animation:cae .45s cubic-bezier(.3,1.5,.6,1) .38s both, selloTiembla .45s ease .84s
+}
+@keyframes selloTiembla{
+  0%,100%{transform:translate(-50%,-50%) rotate(-11deg) scale(1)}
+  30%{transform:translate(calc(-50% - 6px),-50%) rotate(-14deg) scale(1)}
+  70%{transform:translate(calc(-50% + 6px),-50%) rotate(-8deg) scale(1)}
+}
+/* --- ✕ de salir del modal de reglas. Va anclada a la ventana, no a la caja,
+       para que no se vaya al desplazar: la caja es larga y el botón de abajo
+       quedaba a tres pantallas de scroll. --- */
+.modal .cerrar-x{
+  position:absolute;top:calc(.55rem + var(--safeTop,0px));right:.55rem;z-index:80;
+  width:2.4rem;height:2.4rem;display:flex;align-items:center;justify-content:center;
+  font-size:1.15rem;line-height:1;font-family:inherit;
+  color:var(--tinta);background:var(--panel2);border:1px solid var(--bordeC);
+  border-radius:50%;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.5)
+}
+.modal .cerrar-x:active{transform:scale(.92)}
 /* --- El botón de «Seguir el caso» sale oculto con el atributo hidden, pero una
        regla de más arriba le pone display:block y se lo saltaba: aparecía en la
        portada aunque no hubiera partida guardada, y sin hacer nada al pulsarlo,
@@ -847,14 +876,9 @@ ul.ley li.ocupable .spr{background:#CFE0C8;box-shadow:0 0 0 2px var(--verde)}
     linear-gradient(to bottom right,transparent calc(50% - 1.6px),#16120F calc(50% - 1.6px) calc(50% + 1.6px),transparent calc(50% + 1.6px)),
     linear-gradient(to bottom left, transparent calc(50% - 1.6px),#16120F calc(50% - 1.6px) calc(50% + 1.6px),transparent calc(50% + 1.6px))
 }
-/* La automática habla el mismo idioma pero en voz baja: es una consecuencia,
-   no una decisión del jugador. */
-.cel .marca.auto{
-  opacity:.34;
-  background-image:
-    linear-gradient(to bottom right,transparent calc(50% - .9px),#4A3A30 calc(50% - .9px) calc(50% + .9px),transparent calc(50% + .9px)),
-    linear-gradient(to bottom left, transparent calc(50% - .9px),#4A3A30 calc(50% - .9px) calc(50% + .9px),transparent calc(50% + .9px))
-}
+/* La automática, exactamente igual que la manual: una casilla descartada es una
+   casilla descartada, la haya tachado el jugador o la fila de alguien ya puesto. */
+.cel .marca.auto{opacity:1}
 /* --- casillas de un mueble grande: sin borde (encogería la caja y descuadraría
        las mitades del dibujo); las rayas van aquí, que no afecta al tamaño --- */
 .cel.gr::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;box-shadow:var(--lineas,none)}
@@ -928,7 +952,6 @@ ul.ley.pjs i.tenue{color:var(--tenue);font-style:normal;font-size:.82em}
   </div>
 
   <section>
-    <div id="leyenda" class="leyenda"></div>
     <p class="nota-leyenda">Los muebles grandes ocupan su casilla: ahí no cabe nadie. Toca una pista que hable de un mueble y te lo señala en el plano.</p>
     <div id="zona-victima" class="zona-victima"></div>
 
@@ -949,7 +972,7 @@ ul.ley.pjs i.tenue{color:var(--tenue);font-style:normal;font-size:.82em}
     <div class="acciones">
       <span class="hbtn" style="cursor:default">Colocados: <b id="progreso">0/0</b></span>
       <button class="abtn" id="btn-ayuda">💡 Ayuda</button>
-      <button class="abtn principal" id="btn-resolver" disabled>🔍 Resolver caso</button>
+      <button class="abtn principal" id="btn-resolver" disabled>🗂️ Cerrar el caso</button>
       <button class="abtn" id="btn-solucion">🏳️ Ver solución</button>
     </div>
   </section>
@@ -1004,7 +1027,18 @@ ul.ley.pjs i.tenue{color:var(--tenue);font-style:normal;font-size:.82em}
   </div>
 </div>
 
+<div class="modal" id="modal-fallo">
+  <div class="caja">
+    <div id="fallo-cuerpo"></div>
+    <div class="acciones">
+      <button class="abtn principal" id="btn-seguir-investigando">Seguir investigando</button>
+      <button class="abtn" id="btn-ver-solucion">🏳️ Ver la solución</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="modal-reglas">
+  <button class="cerrar-x" id="cerrar-x-reglas" aria-label="Cerrar">✕</button>
   <div class="caja reglas">
     <h2>Cómo se juega <span class="ver" id="reglas-ver" style="font-size:.6rem"></span></h2>
     <ol>
@@ -2117,7 +2151,7 @@ function generarCaso(nivel, semilla) {
     /* La víctima es un ocupante más, con ficha propia. */
     const fichaVictima = {
       id: 'victima', nom: victima.n, em: victima.e, tipo: 'victima', g: victima.g || 'm',
-      tam: 'grande', color: null, desc: 'la víctima', letra: '✝', corto: victima.n,
+      tam: 'grande', color: null, desc: 'la víctima', letra: '✝', corto: victima.e,
       abrev: 'VIC', aro: '#B4543C', foto: null, esVictima: true,
     };
     const ocupantes = cfg.victimaJugable ? sospechosos.concat([fichaVictima]) : sospechosos;
@@ -2366,7 +2400,7 @@ function casoDelLibro(n) {
   const victima = VICTIMAS[B.v];
   const fichaVictima = {
     id: 'victima', nom: victima.n, em: victima.e, tipo: 'victima', g: victima.g || 'm',
-    tam: 'grande', color: null, desc: 'la víctima', letra: '✝', corto: victima.n,
+    tam: 'grande', color: null, desc: 'la víctima', letra: '✝', corto: victima.e,
     abrev: 'VIC', aro: '#B4543C', foto: null, esVictima: true,
   };
   return {
@@ -2399,7 +2433,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /* Nombre del juego: cámbialo aquí y se actualiza cabecera y pestaña. */
 const NOMBRE = 'Sospechoku';
-const VERSION = '4.6';
+const VERSION = '5.0';
 
 /* ---------------- sonido ----------------
    Todo sintetizado con WebAudio: ni un archivo externo, el juego sigue
@@ -2770,6 +2804,7 @@ function quitarDeCasilla(i) {
   if (APP.victimaEn === i) {
     snapshot();
     APP.victimaEn = null;
+    APP.selVictima = true; APP.sel = null;
     SFX.play('quita'); vibra(12);
     pintarTodo();
     return;
@@ -2984,6 +3019,13 @@ function estaPuesto(k) {
   if (c.victimaJugable && k === c.iVic) return APP.victimaEn !== null && APP.victimaEn !== undefined;
   return APP.colocados[k] !== undefined;
 }
+/* Quién está elegido ahora mismo, sea sospechoso o víctima. La víctima ya no
+   es un caso aparte: se apunta y se coloca exactamente igual que los demás. */
+function elegido() {
+  const c = APP.caso;
+  if (APP.selVictima && c && c.victimaJugable) return c.iVic;
+  return APP.sel;
+}
 function nOcupantes() {
   const c = APP.caso;
   return c.victimaJugable ? c.iVic + 1 : c.sospechosos.length;
@@ -3005,22 +3047,22 @@ function tocarCelda(i, corta) {
   if (APP.fase === 'fin') return;
   const c = APP.caso, cel = c.celdas[i], N = c.N;
 
-  /* La víctima se coloca con un toque corto, en cuanto está elegida. */
-  if (APP.victimaLista && APP.selVictima) { colocarVictima(i); return; }
-
-  /* Pulsación corta en modo Colocar: deja un apunte, no coloca. */
+  /* Pulsación corta en modo Colocar: deja un apunte, no coloca. Vale igual para
+     la víctima: se puede apuntar dónde puede estar y dónde seguro que no,
+     exactamente como con cualquier otro personaje. */
+  const yo = elegido();
   if (corta && APP.modo === 'poner') {
-    if (APP.sel === null) { aviso('Elige antes un personaje de la lista.'); return; }
+    if (yo === null) { aviso('Elige antes un personaje de la lista.'); return; }
     if (!libreCelda(cel)) { aviso(porQueNoCabe(cel), 'mal'); SFX.play('error'); return; }
     if (ocupanteEn(i) >= 0) { aviso('Esa casilla ya está ocupada.'); SFX.play('error'); return; }
     snapshot();
     /* Ciclo de tres toques: 1 = puede estar aquí, 2 = aquí seguro que no,
        3 = se borra. El estado 2 lleva su sello NO. */
     const bolsa = APP.supuestos[i] || (APP.supuestos[i] = {});
-    const est = bolsa[APP.sel];
-    if (!est) { bolsa[APP.sel] = 1; SFX.play('chip'); }
-    else if (est !== 2) { bolsa[APP.sel] = 2; SFX.play('sello-no'); vibra(14); }
-    else { delete bolsa[APP.sel]; SFX.play('quita'); }
+    const est = bolsa[yo];
+    if (!est) { bolsa[yo] = 1; SFX.play('chip'); }
+    else if (est !== 2) { bolsa[yo] = 2; SFX.play('sello-no'); vibra(14); }
+    else { delete bolsa[yo]; SFX.play('quita'); }
     if (!Object.keys(bolsa).length) delete APP.supuestos[i];
     pintarTablero();
     const nuevo = document.querySelector('#tablero .cel[data-i="' + i + '"] .sup:last-child');
@@ -3054,6 +3096,10 @@ function tocarCelda(i, corta) {
     return;
   }
 
+  /* Mantener pulsado con la víctima elegida la coloca de verdad, igual que a
+     cualquiera: por eso ya no hay atajo de toque corto para ella. */
+  if (APP.selVictima && c.victimaJugable) { colocarVictima(i); return; }
+
   if (APP.sel === null) { aviso('Elige antes un personaje de la lista.'); return; }
   if (!libreCelda(cel)) { aviso(porQueNoCabe(cel), 'mal'); return; }
 
@@ -3073,7 +3119,7 @@ function tocarCelda(i, corta) {
        ahí ya no puede ir nadie. Es lo mismo que dice la onda de ✕: si Pablo se
        queda en una casilla, las etiquetas de Merlo o de Omaira que hubiera en
        esa cruz sobran, y dejarlas puestas solo estorba. */
-  APP.celdasBarridas = barrerCruz(i, APP.sel);
+  APP.celdasBarridas = barrerCruz(i, elegido());
   const sig = c.sospechosos.findIndex((_, k) => APP.colocados[k] === undefined);
   APP.sel = sig >= 0 ? sig : null;
   APP.fase = 'jugando';
@@ -3104,9 +3150,12 @@ function barrerCruz(i, quien) {
 }
 
 function colocarConAnimacion(i) {
-  const antes = Object.keys(APP.colocados).length;
+  /* La víctima cuenta como uno más: si no, colocarla no se notaba como acierto
+     y sonaba el error. */
+  const cuenta = () => Object.keys(APP.colocados).length + (victimaPuesta() ? 1 : 0);
+  const antes = cuenta();
   tocarCelda(i, false);
-  const despues = Object.keys(APP.colocados).length;
+  const despues = cuenta();
   if (despues === antes) { SFX.play('error'); return; }
 
   SFX.play('poner');
@@ -3305,7 +3354,7 @@ function pintarTablero() {
         const claves = Object.keys(APP.supuestos[i]);
         const visibles = claves.length > 3 ? claves.slice(0, 2) : claves;
         let chips = visibles.map(k => {
-          const sp = c.sospechosos[+k];
+          const sp = ocupante(+k);
           const descartado = APP.supuestos[i][k] === 2;
           return '<i class="sup' + (APP.sel === +k ? ' resalta' : '') + (descartado ? ' aqui-no' : '') +
             '" style="background:' + sp.aro + '">' +
@@ -3322,11 +3371,8 @@ function pintarTablero() {
   ajustarTablero();
   ajustarTipos();
   pintarEtiquetas();
-
-  // leyenda
-  const habs = Array.from(new Set(c.celdas.map(x => x.hab)));
-  $('#leyenda').innerHTML = habs.map(h =>
-    '<span class="chip-hab" style="--h:' + HAB[h].hue + '">' + HAB[h].N + '</span>').join('');
+  /* Antes había debajo una tira de chips con el nombre de cada estancia. Sobra:
+     los rótulos ya están escritos sobre el propio plano. */
 }
 
 function pintarEtiquetas() {
@@ -3349,8 +3395,10 @@ function pintarEtiquetas() {
     el.textContent = HAB[h].ab;
     el.style.left = ((c.x1 + c.x2) / 2 - base.left) + 'px';
     el.style.top = (c.y2 - base.top - 3) + 'px';
-    el.style.fontSize = Math.max(8, Math.min(15, c.alto * 0.34)) + 'px';
-    el.style.webkitTextStrokeWidth = Math.max(2, c.alto * 0.07) + 'px';
+    /* Más pequeños que antes: son una referencia, no un titular, y a tamaño
+       grande se comían medio plano y pisaban los muebles. */
+    el.style.fontSize = Math.max(6.5, Math.min(11, c.alto * 0.24)) + 'px';
+    el.style.webkitTextStrokeWidth = Math.max(1.4, c.alto * 0.048) + 'px';
     capa.appendChild(el);
   }
 }
@@ -3400,43 +3448,33 @@ function carasDePista(p) {
   }).join('') + '</span>';
 }
 
-/* Una tarjeta por personaje con UNA sola frase: si el motor le ha dado dos
-   pistas, se funden en una oración encadenada. Y una tarjeta por cada nota
-   suelta del caso. */
+/* Una tarjeta por personaje. Cada pista va en su propia frase, separadas por
+   punto. Antes se encadenaban con "y" y "pero" para que sonara a una sola
+   oración, pero con tres pistas aquello era ilegible: demasiadas conjunciones
+   seguidas y no se veía dónde acababa una cosa y empezaba la siguiente.
+   Lo único que se hace es no repetir el nombre: de la segunda frase en adelante
+   el sujeto se sobreentiende, que es como se habla. */
 function fundirPistas(textos, nombre) {
-  /* Solo se encadenan las frases que empiezan por el nombre del personaje.
-     Las de referencia anónima ("3 casillas al este de Raquel, alguien
-     estaba en un baño") no se pueden encadenar así: el "y estaba..." de la
-     siguiente se leería como si hablara del desconocido, no de Raquel.
-     Esas van aparte, como frase suelta. */
-  const propias = [], sueltas = [];
-  for (const t of textos) {
-    const x = t.trim();
-    /* la víctima se llama "la empanada", con minúscula, pero su frase empieza
-       con mayúscula: hay que comparar sin distinguir */
-    const suya = x.toLowerCase().indexOf(nombre.toLowerCase() + ' ') === 0;
-    (suya ? propias : sueltas).push(x);
-  }
+  const mayus = t => t.charAt(0).toUpperCase() + t.slice(1);
   const frases = [];
-  if (propias.length) {
-    const trozos = propias.map((t, k) => {
-      let x = t.replace(/\.$/, '');
-      if (k > 0) {
-        /* fuera el nombre repetido al principio de la segunda frase */
-        if (x.toLowerCase().indexOf(nombre.toLowerCase() + ' ') === 0) x = x.slice(nombre.length + 1);
-        if (x.indexOf('no ') === 0) x = 'tampoco ' + x.slice(3);
-        /* "y estaba en la fila 7, y estaba pegado a..." cansa: si la segunda
-           frase vuelve a empezar por "estaba", se quita y encadena sola. */
-        else if (x.indexOf('estaba ') === 0) x = x.slice(7);
-      }
-      return x;
-    });
-    frases.push(trozos.join(', y ') + '.');
+  let negAntes = false;
+  for (const bruto of textos) {
+    const t = bruto.trim();
+    let x = t;
+    /* Solo se le quita el nombre a las frases que empiezan por él. Las de
+       referencia anónima ("3 casillas al este de Raquel, alguien estaba...")
+       se quedan enteras: ahí el nombre no es el sujeto. */
+    if (frases.length && t.toLowerCase().indexOf(nombre.toLowerCase() + ' ') === 0) {
+      x = t.slice(nombre.length + 1);
+      /* "Tampoco" solo vale detrás de otra negación. */
+      if (negAntes && x.indexOf('no ') === 0) x = 'tampoco ' + x.slice(3);
+      x = mayus(x);
+    }
+    negAntes = /(^|\s)no\s/.test(t);
+    frases.push(/[.!?]$/.test(x) ? x : x + '.');
   }
-  for (const t of sueltas) frases.push(/\.$/.test(t) ? t : t + '.');
   return frases.join(' ');
 }
-
 function pintarPistas() {
   const c = APP.caso;
   const nOc = nOcupantes();
@@ -3609,25 +3647,7 @@ function resolver() {
   /* La víctima cuenta como uno más: ya no aparece sola al final, se deduce. */
   if (c.victimaJugable && APP.victimaEn === c.solucion[c.iVic]) bien++;
   const total = nOcupantes();
-  if (bien < total) {
-    const fallan = total - bien;
-    setTimeout(() => {
-      const t = $('#tablero');
-      if (fallan <= 2) {
-        /* Casi. El casi-acierto es lo que hace repetir, así que suena distinto. */
-        SFX.play('casi'); vibra([12, 60, 12]);
-        if (t) { t.classList.remove('roza'); void t.offsetWidth; t.classList.add('roza'); }
-        aviso(fallan === 1
-          ? '¡Uf! Solo uno fuera de sitio. Lo tienes en la mano.'
-          : 'Muy cerca: solo dos fuera de sitio.');
-      } else {
-        SFX.play('mal'); vibra(70);
-        if (t) { t.classList.remove('falla'); void t.offsetWidth; t.classList.add('falla'); }
-        aviso('Hay ' + bien + ' de ' + total + ' en su sitio. Sigue investigando.', 'mal');
-      }
-    }, 260);
-    return;
-  }
+  if (bien < total) { setTimeout(() => casoSinResolver(bien, total), 260); return; }
   SFX.play('bien');
   const celVic = c.victimaJugable ? APP.victimaEn : celdaVictimaActual();
   APP.fase = 'acusar';
@@ -3666,7 +3686,10 @@ function acusar(k) {
   $('#final-cuerpo').innerHTML =
     '<div class="culpable-em">' + retrato(s, 'grande') + '</div>' +
     '<h2>' + s.nom + '</h2>' +
-    '<p>' + s.desc.charAt(0).toUpperCase() + s.desc.slice(1) + ' estaba a solas con ' + c.victima.n + ' en ' + HAB[c.celdas[c.celdaVictima].hab].n + '. Caso cerrado.</p>' +
+    /* Por su nombre, no por la descripción: "la humana de la melena" no le dice
+       nada a nadie, y encima el nombre ya está justo encima. */
+    '<p><b>' + s.nom + '</b> estaba a solas con ' + c.victima.n + ' en <b>' +
+      HAB[c.celdas[c.celdaVictima].hab].n + '</b>. Caso cerrado.</p>' +
     '<p class="datos">⏱ ' + fmt(APP.segundos) + ' · 💡 ' + APP.ayudas + ' ayuda' + (APP.ayudas === 1 ? '' : 's') + ' · caso #' + c.semilla + '</p>' + txtRec;
   $('#modal-final').classList.add('visible');
   const caja = $('#modal-final .caja');
@@ -3682,6 +3705,40 @@ function acusar(k) {
   pintarTablero();
 }
 
+/* El caso no cuadra. Antes solo salía un aviso de paso, que se perdía; ahora
+   tiene su propio momento, con sello y todo, y desde ahí se puede tirar la
+   toalla y ver la solución sin buscar el botón por la pantalla. */
+function casoSinResolver(bien, total) {
+  const c = APP.caso, fallan = total - bien;
+  const t = $('#tablero');
+  if (fallan <= 2) {
+    SFX.play('casi'); vibra([12, 60, 12]);
+    if (t) { t.classList.remove('roza'); void t.offsetWidth; t.classList.add('roza'); }
+  } else {
+    SFX.play('mal'); vibra(70);
+    if (t) { t.classList.remove('falla'); void t.offsetWidth; t.classList.add('falla'); }
+  }
+  $('#fallo-cuerpo').innerHTML =
+    '<h2>Caso sin resolver</h2>' +
+    '<p>' + (fallan === 1
+      ? 'Solo hay <b>uno</b> fuera de sitio. Lo tienes en la mano.'
+      : fallan === 2
+        ? 'Hay <b>dos</b> fuera de sitio. Estás muy cerca.'
+        : 'Hay <b>' + bien + ' de ' + total + '</b> en su sitio.') + '</p>' +
+    '<p class="datos">⏱ ' + fmt(APP.segundos) + ' · 💡 ' + APP.ayudas +
+      ' ayuda' + (APP.ayudas === 1 ? '' : 's') + ' · caso #' + c.semilla + '</p>';
+  $('#modal-fallo').classList.add('visible');
+  const caja = $('#modal-fallo .caja');
+  if (caja) {
+    caja.querySelectorAll('.sello-caso').forEach(x => x.remove());
+    const sello = document.createElement('div');
+    sello.className = 'sello-caso fallo';
+    sello.textContent = 'SIN RESOLVER';
+    caja.appendChild(sello);
+    setTimeout(() => { SFX.play('sello'); vibra([40, 60, 90]); }, 380);
+  }
+}
+
 /* ---------------- ayuda ---------------- */
 function ayuda() {
   const c = APP.caso;
@@ -3694,9 +3751,20 @@ function ayuda() {
   const k = mal[Math.floor(Math.random() * mal.length)];
   snapshot();
   const destino = c.solucion[k];
-  const ocupa = celdaOcupadaPor(destino);
-  if (ocupa >= 0) delete APP.colocados[ocupa];
-  if (APP.victimaEn === destino) APP.victimaEn = null;
+  /* Al soltar a alguien en su casilla hay que quitar de en medio no solo a
+     quien estuviera en ella, sino a todo el que ocupe su fila o su columna.
+     Antes solo se miraba la casilla, y la ayuda podía dejar dos personajes en
+     la misma línea: con los doce puestos quedaba una columna vacía y el caso
+     no cerraba nunca. Un colocado por otra ayuda nunca estorba, porque dos
+     casillas de la solución jamás comparten fila ni columna. */
+  const rD = (destino / c.N) | 0, cD = destino % c.N;
+  const estorba = j => j === destino || ((j / c.N) | 0) === rD || (j % c.N) === cD;
+  for (const q in APP.colocados) {
+    if (!estorba(APP.colocados[q])) continue;
+    delete APP.colocados[q];
+    delete APP.fijados[q];
+  }
+  if (victimaPuesta() && estorba(APP.victimaEn)) APP.victimaEn = null;
   if (c.victimaJugable && k === c.iVic) APP.victimaEn = destino;
   else { APP.colocados[k] = destino; APP.fijados[k] = true; }
   APP.ayudas++;
@@ -3706,9 +3774,9 @@ function ayuda() {
   pintarTodo();
 }
 
-function rendirse() {
+function rendirse(sinPreguntar) {
   const c = APP.caso;
-  if (!confirm('¿Seguro que quieres ver la solución? Se acaba el caso.')) return;
+  if (!sinPreguntar && !confirm('¿Seguro que quieres ver la solución? Se acaba el caso.')) return;
   pararReloj();
   APP.fase = 'fin';
   APP.colocados = {};
@@ -3754,7 +3822,7 @@ function conectar() {
     const hayVictima = APP.victimaEn === i;
     const sePuedeQuitar = (quien >= 0 && !APP.fijados[quien]) || hayVictima;
     /* La víctima se coloca con toque corto, no con pulsación larga. */
-    const sePuedeColocar = APP.sel !== null && !APP.selVictima;
+    const sePuedeColocar = elegido() !== null;
 
     if (APP.modo !== 'poner' || (!sePuedeQuitar && !sePuedeColocar)) { pulsa = { i, b, corto: true }; return; }
 
@@ -3846,7 +3914,12 @@ function conectar() {
   $('#btn-deshacer').addEventListener('click', () => { SFX.play('quita'); deshacer(); });
   $('#btn-ayuda').addEventListener('click', ayuda);
   $('#btn-resolver').addEventListener('click', resolver);
-  $('#btn-solucion').addEventListener('click', rendirse);
+  $('#btn-solucion').addEventListener('click', () => rendirse(false));
+  $('#btn-seguir-investigando').addEventListener('click', () => $('#modal-fallo').classList.remove('visible'));
+  $('#btn-ver-solucion').addEventListener('click', () => {
+    $('#modal-fallo').classList.remove('visible');
+    rendirse(true);
+  });
   $('#acusar-lista').addEventListener('click', e => {
     const b = e.target.closest('.acu'); if (!b) return;
     acusar(+b.dataset.a);
@@ -3867,7 +3940,12 @@ function conectar() {
     SFX.play('abrir');
     APP.empezarPartida();
   });
-  $('#cerrar-reglas').addEventListener('click', () => $('#modal-reglas').classList.remove('visible'));
+  const cerrarReglas = () => $('#modal-reglas').classList.remove('visible');
+  $('#cerrar-reglas').addEventListener('click', cerrarReglas);
+  /* Y una ✕ arriba, fija: el modal es largo y tener que bajar hasta el final
+     para encontrar el botón de salir es un incordio. */
+  const equis = $('#cerrar-x-reglas');
+  if (equis) equis.addEventListener('click', cerrarReglas);
   document.addEventListener('keydown', e => {
     if (e.key === 'z' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); deshacer(); }
     if (e.key === 'x') { APP.modo = APP.modo === 'x' ? 'poner' : 'x'; pintarAcciones(); }
